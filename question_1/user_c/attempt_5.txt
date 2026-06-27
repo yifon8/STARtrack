@@ -1,0 +1,8 @@
+[Stub — user_c attempt 5]
+At Veritas Systems I had to influence the Head of Security, Leon, to approve a new
+third-party vendor without the standard 90-day review cycle. The vendor had SOC 2 Type II
+and we had a signed BAA in hand. I drafted a one-page exception request citing three
+precedents where the team had approved faster reviews, attached the compliance docs,
+and requested a 30-minute review call. Leon approved in 10 days — 80 days faster than
+the standard process. The vendor integration launched on schedule and passed our
+internal security audit six months later.

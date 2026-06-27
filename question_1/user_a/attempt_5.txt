@@ -1,0 +1,7 @@
+[Stub — user_a attempt 5]
+Last year I led the data pipeline redesign at Acme Corp without managing anyone directly.
+The data engineering lead, Priya, was skeptical about moving from batch to streaming.
+I scheduled a working session, walked through latency benchmarks, and proposed a phased rollout
+that let her team revert if needed. She approved the plan in that meeting.
+We shipped Phase 1 in eight weeks; end-to-end latency improved by 40% and the team's on-call
+burden dropped by half.

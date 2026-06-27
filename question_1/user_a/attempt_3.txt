@@ -1,0 +1,4 @@
+[Stub — user_a attempt 3]
+In Q3 last year, I needed to convince a product manager named Sarah to reprioritize a feature.
+I prepared a short doc showing user impact data. After a 30-minute meeting she agreed to move it up.
+The feature shipped two sprints early and reduced support tickets by about 20%.

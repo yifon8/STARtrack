@@ -1,0 +1,6 @@
+[Stub — user_c attempt 4]
+During a Q4 roadmap review, I needed the VP of Sales, Karen, to delay a customer commitment
+so engineering could address tech debt. She had already verbally promised the feature.
+I created a risk matrix showing three scenarios and their revenue impact. Karen pushed back
+initially, but after I showed the on-call escalation history for that module she agreed
+to a 6-week delay. The feature launched stable with zero P1 incidents in the first month.

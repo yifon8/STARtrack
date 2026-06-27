@@ -1,0 +1,6 @@
+[Stub — user_b attempt 4]
+During a rebranding project, I needed the lead designer, Marco, to prioritize accessibility fixes
+over visual polish. The deadline was tight and he reported to a different VP than I did.
+I pulled three months of support tickets showing accessibility complaints, put them in a one-pager,
+and asked for 20 minutes on his calendar. He reprioritized the following day.
+We passed WCAG 2.1 AA audit two weeks before launch.

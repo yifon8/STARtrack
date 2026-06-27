@@ -1,0 +1,7 @@
+[Stub — user_b attempt 5]
+At my current role I needed to get the finance team to approve an unbudgeted tooling purchase
+of $18 000. The finance lead, Diana, had a hard rule about mid-cycle requests.
+I modeled the ROI over 12 months, showing the tool would save 200 engineer-hours per quarter
+and pay back in under 5 months. I also found a vendor discount that expired in 10 days.
+Diana fast-tracked approval within 48 hours. The tool has since saved an estimated $62 000
+in engineering time in its first year.

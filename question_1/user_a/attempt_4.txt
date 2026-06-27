@@ -1,0 +1,6 @@
+[Stub — user_a attempt 4]
+During a platform migration at my previous company, I had to persuade a senior engineer, James,
+to adopt a new API contract I had designed. He had concerns about backward compatibility.
+I built a comparison document showing the migration path and ran a proof-of-concept over one weekend.
+James reviewed it, agreed the risk was manageable, and we rolled it out in six weeks.
+Integration time for downstream teams dropped by 30%.

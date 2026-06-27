@@ -1,0 +1,47 @@
+# STARtrack — Interview Practice Coach
+# Capstone requirements  |  Python 3.10+  |  Runs locally with Google ADK
+# Last updated: 2026-06-27
+#
+# Setup:
+#   1. git clone <repo> && cd <repo>
+#   2. cp .env.example .env  →  add your GOOGLE_API_KEY from aistudio.google.com
+#   3. pip install -r requirements.txt
+#   4. python agent.py   OR   adk web .
+
+# ── Core agent framework ───────────────────────────────────────────────────────
+google-adk==2.3.0          # ADK 2.x — Skills, FunctionTool, Runner, adk web UI
+                           # Requires Python 3.10+
+                           # Always pass model= explicitly in Agent() —
+                           # default changed to gemini-3-flash-preview in 2.3.0
+
+# ── Gemini API SDK ─────────────────────────────────────────────────────────────
+google-genai>=1.16.0       # Unified Google Gen AI SDK (required by google-adk 2.x)
+                           # Used for gemini-3.1-flash-lite (assessment + progression)
+                           # and gemini-2.5-flash-lite (semantic gate only)
+
+# ── Environment / secrets ──────────────────────────────────────────────────────
+python-dotenv>=1.0.0       # Loads GOOGLE_API_KEY from .env file at runtime
+                           # Usage in agent.py: from dotenv import load_dotenv; load_dotenv()
+                           # .env is gitignored — copy .env.example to get started
+
+# ── UI ─────────────────────────────────────────────────────────────────────────
+gradio==6.16.0             # Gradio web UI — skills/ui.py
+                           # demo.launch() opens browser on http://localhost:7860
+
+# ── PDF scoresheet ─────────────────────────────────────────────────────────────
+reportlab==4.4.10          # PDF generation — skills/scoresheet.py
+
+# ── Charts ─────────────────────────────────────────────────────────────────────
+matplotlib==3.10.8         # Radar chart + line chart — skills/scoresheet.py
+                           # Uses Agg backend (no display required):
+                           #   import matplotlib; matplotlib.use('Agg')
+
+# ── Numerics ───────────────────────────────────────────────────────────────────
+numpy==2.4.4               # Required by matplotlib for chart data arrays
+
+# ── Standard library (no install needed, listed for documentation) ─────────────
+# json      — .jsonl reads and writes, session record serialisation
+# sqlite3   — local SQLite DB (Phase 4, before MCP swap)
+# pathlib   — file path handling across Skills
+# os        — environment variable access
+# typing    — type hints (Optional, list, dict)

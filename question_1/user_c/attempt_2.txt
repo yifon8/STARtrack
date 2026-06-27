@@ -1,0 +1,4 @@
+[Stub — user_c attempt 2]
+There was this time I was working with a team lead named Raj on a mobile project.
+I needed him to test on Android first before iOS, which was kind of the opposite of his plan.
+I put together a table showing our Android user share was 68%. He agreed to flip the order.

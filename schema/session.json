@@ -1,0 +1,26 @@
+{
+  "_comment": "Interview Practice Coach — Session Schema v1.0. This is the single source of truth for all session data in this project. All Skills read from and write to this schema. Do not add, remove, or rename fields without team agreement.",
+
+  "question_id": "string — which question set, e.g. question_1",
+  "user_id": "string — which progression track, e.g. user_a | user_b | user_c",
+  "attempt_number": "int — position within the progress track, 1 to 5. Resets independently per user_id. Uniqueness = question_id + user_id + attempt_number.",
+  "date": "string — YYYY-MM-DD format",
+  "source_file": "string — relative path to source input, e.g. question_1/user_c/attempt_3.txt or question_1/user_c/attempt_3.mp3",
+  "transcription_method": "string — how transcript was produced: text_upload | gemini_audio | whisper | null",
+
+  "transcript": "string — raw answer text, whether typed or transcribed from audio",
+
+  "scores": {
+    "_comment": "Each dimension scored 0 to 3. overall_score must equal the sum of all five dimensions.",
+    "star_structure": "int — 0 to 3. Did the answer follow Situation / Task / Action / Result structure?",
+    "specificity": "int — 0 to 3. Were concrete details, names, numbers, and outcomes provided?",
+    "relevance": "int — 0 to 3. Did the answer directly address the question asked?",
+    "confidence_language": "int — 0 to 3. Was language direct and assertive, free of excessive hedging or filler words?",
+    "conciseness": "int — 0 to 3. Was the answer appropriately scoped — neither too brief nor rambling?",
+    "overall_score": "int — 0 to 15. Must equal star_structure + specificity + relevance + confidence_language + conciseness."
+  },
+
+  "strengths": "list of strings — 1 to 3 items. Specific things the candidate did well in this session.",
+  "gaps": "list of strings — 1 to 3 items. Specific things missing or weak in this session.",
+  "one_specific_improvement": "string — single actionable instruction the candidate should apply in the next session. Must be concrete, not generic."
+}
