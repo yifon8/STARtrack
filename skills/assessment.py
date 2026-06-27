@@ -13,6 +13,7 @@ def assess_answer(
     question_id: str = "question_1",
     user_id: Optional[str] = None,
     attempt_number: Optional[int] = None,
+    model: str = "gemini-3.1-flash-lite",
 ) -> dict:
     """Score a candidate's answer transcript against the rubric.
 
@@ -21,6 +22,7 @@ def assess_answer(
         question_id: Which question is being answered (default: question_1).
         user_id: Progression track identifier (e.g. user_a).
         attempt_number: Position within the user's progression track (1–5).
+        model: Model to use for scoring.
 
     Returns:
         dict matching the session.json schema:

@@ -13,7 +13,7 @@ def run_meta_eval(
     transcript: str,
     assessment: dict,
     question_id: str = "question_1",
-    model: str = "gemini-3.1-flash-lite",
+    model: str = "gemini-3.1-flash",
 ) -> dict:
     """Run an LLM-as-judge evaluation on a completed assessment.
 

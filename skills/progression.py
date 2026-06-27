@@ -27,6 +27,7 @@ def analyze_progression(
     user_id: str,
     question_id: str = "question_1",
     history_dir: str = "history",
+    model: str = "gemini-3.1-flash-lite",
 ) -> dict:
     """Generate a narrative analysis across all recorded attempts for a user.
 
@@ -37,6 +38,7 @@ def analyze_progression(
         user_id: Progression track identifier (e.g. user_c).
         question_id: Filters records to a single question set.
         history_dir: Path to the directory containing .jsonl history files.
+        model: Model to use for narrative generation.
 
     Returns:
         dict with keys: summary (str), trend (str), persistent_gaps (list[str]),
