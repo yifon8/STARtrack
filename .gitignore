@@ -1,6 +1,9 @@
 # Secrets
 .env
 
+# ADK local runtime state (session DB created by `adk web`)
+.adk/
+
 # Generated outputs (keep placeholder so directory exists in git)
 outputs/*
 !outputs/.gitkeep

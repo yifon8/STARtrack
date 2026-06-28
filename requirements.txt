@@ -30,6 +30,8 @@ gradio==6.16.0             # Gradio web UI — skills/ui.py
 
 # ── PDF scoresheet ─────────────────────────────────────────────────────────────
 reportlab==4.4.10          # PDF generation — skills/scoresheet.py
+pypdf>=4.0.0               # PDF text extraction — used only by tests/integration_test.py
+                           # to verify generated scoresheet content (not used at runtime)
 
 # ── Charts ─────────────────────────────────────────────────────────────────────
 matplotlib==3.10.8         # Radar chart + line chart — skills/scoresheet.py
