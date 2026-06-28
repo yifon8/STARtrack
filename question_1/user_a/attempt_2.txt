@@ -1,3 +1,8 @@
-[Stub — user_a attempt 2]
-At my last job I worked with a colleague on a project and needed them to change their approach.
-I set up a meeting and explained why I thought my way was better. They agreed and we moved forward.
+
+Attempt 2 — Basic Structure (~1 minute spoken)
+
+At my previous job, I was on a cross-functional project team and one of my peers — a developer — kept delivering their pieces late. This created a bottleneck for the rest of us.
+
+Since I had no authority over them, I requested a one-on-one conversation. I came prepared with data showing how their delays were pushing back our shared milestones. I made sure to frame it around our common goal rather than pointing blame.
+
+After that conversation, they started flagging blockers earlier and we got back on track. The project delivered on time and the working relationship stayed positive.
