@@ -1,6 +1,23 @@
-[Stub — user_a attempt 4]
-During a platform migration at my previous company, I had to persuade a senior engineer, James,
-to adopt a new API contract I had designed. He had concerns about backward compatibility.
-I built a comparison document showing the migration path and ran a proof-of-concept over one weekend.
-James reviewed it, agreed the risk was manageable, and we rolled it out in six weeks.
-Integration time for downstream teams dropped by 30%.
+
+Attempt 4 — Polished STAR with Reflection (~3 minutes spoken)
+
+Situation:
+About two years ago, I was coordinating a high-visibility product launch at my company. The team spanned engineering, design, and marketing — none of whom reported to me. About six weeks before launch, I noticed that one of the senior developers was consistently missing internal deadlines by two to three days. Each slip was small on its own, but when compounded, it was threatening our launch date.
+
+Task:
+My job was to keep the project on track, but I had no formal authority to direct this person's work. Escalating to their manager felt like a last resort — it could create defensiveness and harm the collaborative dynamic we needed. So I needed to influence them through relationship and reasoning alone.
+
+Action:
+First, I did some homework. I mapped out exactly how each of their delays rippled through the rest of the project — the specific tasks that couldn't start, the reviewers who were blocked, the buffer days we were burning. I wanted to show impact, not just express frustration.
+
+Then I asked to grab coffee with them — low stakes, no agenda on the calendar invite. Once we sat down, I started by acknowledging that they were clearly juggling a lot. That opened the door for them to share that they were being pulled into urgent support requests by a different team mid-sprint.
+
+With that context, we had a real conversation. I showed them the cascade diagram I'd prepared and asked, "What would make it easier to protect your time for this project?" They came up with most of the solution themselves: blocking their mornings for project work, sending a quick Slack message if something was going to slip before it actually did, and looping me in earlier.
+
+I also took some action on my end — I worked with another team member to absorb two of the lower-priority deliverables so the developer could focus on what was most critical.
+
+Result:
+Their delivery consistency improved dramatically over the next few weeks. We launched the product on time. After the project wrapped, the developer specifically mentioned in our team retrospective that the way I'd approached the conversation made them feel respected rather than called out. That stood out to me — it confirmed that how you influence someone matters just as much as the outcome you're trying to reach.
+
+What I learned:
+Leading without authority requires you to invest in understanding the other person's reality before presenting your own. When people feel heard, they're far more willing to collaborate on a solution.

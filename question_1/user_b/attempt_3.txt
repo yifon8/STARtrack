@@ -1,4 +1,16 @@
-[Stub — user_b attempt 3]
-I was on a cross-functional team and needed a designer to prioritize my team's requests.
-I spoke with her and shared some customer feedback. She said she would try to fit it in.
-It took a few weeks but the changes were eventually made.
+Attempt 3 — STAR Structure, Confidence Starting to Waver (~2 minutes spoken)
+[Specificity up, confidence beginning to dip — more hedging]
+
+Situation:
+So this was on a product launch I was coordinating — maybe a year and a half ago, I think. We had a cross-functional team and one of the senior engineers was delivering things a few days late pretty consistently. I wasn't their manager or anything, so I had to figure out another way to handle it.
+
+Task:
+I guess my goal was to get the project back on schedule without making things awkward. I wasn't totally sure I was the right person to bring it up, honestly, but someone had to.
+
+Action:
+I put together a timeline — or at least a rough version of one — showing how the delays were stacking up. I'm not sure how clear it was, but I tried. I asked the engineer if we could chat informally. When I mentioned the delays, I found out they were being pulled into another team's support queue without much warning. That was something I hadn't anticipated.
+
+We talked through some options. I suggested blocking mornings for project work and flagging issues earlier, and they seemed okay with that, I think. I also moved a couple of lower-priority tasks off their plate.
+
+Result:
+Things improved after that, and we did ship on time. I think it helped — though I'll admit I was second-guessing myself a lot during the conversation. I'm not always sure I handled the framing perfectly, but the outcome was good.

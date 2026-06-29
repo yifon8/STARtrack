@@ -1,4 +1,16 @@
-[Stub — user_a attempt 3]
-In Q3 last year, I needed to convince a product manager named Sarah to reprioritize a feature.
-I prepared a short doc showing user impact data. After a 30-minute meeting she agreed to move it up.
-The feature shipped two sprints early and reduced support tickets by about 20%.
+
+Attempt 3 — STAR Structure Introduced (~2 minutes spoken)
+
+Situation:
+While working as a project coordinator on a product launch, I was part of a cross-functional team that included developers, designers, and a marketing lead. One of the senior developers was consistently delivering their modules two to three days late. Because I had no direct authority over them, I had to find another way to address it.
+
+Task:
+My goal was to get the project back on schedule without damaging the relationship or escalating to management, which I felt would create tension and slow things down further.
+
+Action:
+I reached out to schedule a casual one-on-one — not framed as a confrontation, but as a check-in. I came with a simple visual showing how the delays were cascading across the rest of the timeline. I asked open-ended questions to understand their challenges first, which uncovered that they were being pulled into last-minute support tickets by another team.
+
+Together, we worked out an agreement: they would block off mornings for project work and flag conflicts earlier. I also helped buffer some of their tasks by redistributing two non-critical items to other team members.
+
+Result:
+Over the following three weeks, their delivery cadence improved significantly. We shipped the product launch on time, and the developer later thanked me for approaching it the way I did. It built a stronger working relationship going forward.

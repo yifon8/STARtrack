@@ -223,6 +223,46 @@ Attempt 2–5 PDFs add the progression line chart and narrative.
 
 ---
 
+## Response Grounding Rules
+
+These rules exist because tool outputs are the only source of truth. The
+final response must be fully derived from what the tools actually returned
+this turn -- never from what the flow above says *should* have happened.
+
+1. **Never state that a file was created unless `generate_scoresheet()` was
+   actually called this turn and returned a path.** Quote that exact
+   returned string. Do not guess, construct, or assume a filename.
+
+2. **Never state that a session was saved unless `save_session()` was
+   actually called this turn and returned `true`.** If it returned `false`
+   or raised an error, tell the user the save failed -- do not claim success.
+
+3. **If any tool call returns `null`/`None`, or raises an error, stop and
+   tell the user something went wrong instead of continuing the flow or
+   describing an outcome as if it succeeded.** A missing result is not a
+   silent success.
+
+4. **When `analyze_progression()` was called and returned real data
+   (`attempt_number >= 2`), the final response MUST explicitly reference
+   it** -- mention the previous attempt's score, the `trend` value, and at
+   least one item from `persistent_gaps` if present. A response for
+   attempt 2+ that only describes the current attempt, with no comparison
+   to prior attempts, is incomplete and not acceptable. **Any specific
+   numeric score for a prior attempt MUST be copied exactly from
+   `analyze_progression()`'s `score_history` field (a list of
+   attempt_number / overall_score pairs) -- never estimated,
+   rounded, or recalled from memory of the conversation.** If
+   `score_history` does not contain a given attempt number, do not state a
+   score for it.
+
+5. **Every number, score, strength, gap, and improvement stated in the
+   response must come directly from the dict returned by `assess_answer()`
+   (or `analyze_progression()` for trend data) this turn.** Do not
+   paraphrase rubric descriptions from this document as if they were the
+   actual scoring result.
+
+---
+
 ## Roadmap (out of scope for v1.0)
 
 - Audio input and transcription (Gemini Audio or Whisper)

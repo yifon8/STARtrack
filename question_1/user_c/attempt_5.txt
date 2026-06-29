@@ -1,8 +1,27 @@
-[Stub — user_c attempt 5]
-At Veritas Systems I had to influence the Head of Security, Leon, to approve a new
-third-party vendor without the standard 90-day review cycle. The vendor had SOC 2 Type II
-and we had a signed BAA in hand. I drafted a one-page exception request citing three
-precedents where the team had approved faster reviews, attached the compliance docs,
-and requested a 30-minute review call. Leon approved in 10 days — 80 days faster than
-the standard process. The vendor integration launched on schedule and passed our
-internal security audit six months later.
+Attempt 5 — Breakthrough (~4.5 minutes spoken)
+[Full command — specific, structured, confident, with genuine leadership insight]
+
+Situation:
+About eighteen months ago I was coordinating a high-visibility product launch — six weeks to go, VP-level eyes on it. The team spanned engineering, design, QA, and marketing. None of them reported to me. Around the four-week mark, I identified a pattern: one of the senior engineers had delivered two to three days late across four consecutive sprints. Individually, each slip felt manageable. But I'd tracked the cascade — those delays were blocking downstream tasks, compressing our testing window, and quietly putting the launch date at risk.
+
+Task:
+My job was to protect the timeline. My constraint was that I had no authority to direct this person's work. And my goal — beyond the project — was to solve this in a way that didn't damage the relationship or the team's dynamic. Escalating to their manager was a last resort. I wanted to try influence first.
+
+Action:
+I spent an hour before doing anything else. I mapped the dependencies — each delayed deliverable, which tasks it blocked, and the total buffer we'd burned. I wanted to lead with shared data, not with frustration.
+
+Then I asked the engineer if we could grab coffee. Informal, low-key — just "wanted to sync on the project." I made a deliberate choice to spend the first part of the conversation listening. I asked how things were going on their end before I said anything about the delays.
+
+That choice paid off. They told me they were being assigned to P1 support incidents by a different team lead — with no advance warning and no capacity buffer. They were juggling both streams and losing ground on both. That was something I hadn't known, and it changed everything about the conversation.
+
+I shared the dependency map — not as an accusation, but as context we both needed to see. Then I asked: "What would make it easier to protect your time for this project?" They drove most of the solution: blocking 9 to 12 in the mornings for focused project work, and sending me a Slack message by end of day if something was going to slip before it actually did.
+
+On my side, I absorbed two of their lower-priority deliverables by redistributing them to a team member with capacity, and I set up a lightweight weekly 15-minute check-in — just the two of us — so small blockers could surface early.
+
+Result:
+The change was visible within the first week. When one external incident did come up three weeks later, they flagged it two days ahead of the deadline. We adjusted, absorbed it, and launched on time.
+
+What stayed with me wasn't the on-time launch — it was what the engineer said at the retrospective. Unprompted, they called out that the way I'd approached the conversation made them feel like a partner rather than a problem. That's the outcome that told me the approach was right.
+
+What I learned:
+The plateau I'd been stuck in with earlier attempts at this answer was that I kept describing what I did without understanding why it worked. The breakthrough was realizing that influence without authority isn't a technique — it's a posture. You earn it by understanding someone's reality before you try to change their behavior. When people feel genuinely heard, they stop being obstacles and start being collaborators. That's not soft — that's how you actually move things.
