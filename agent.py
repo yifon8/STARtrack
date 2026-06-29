@@ -19,7 +19,7 @@ from skills.eval import run_meta_eval
 from skills.ui import reset_progress
 
 # Load static context from AGENTS.md at startup
-_AGENTS_MD = open("AGENTS.md").read()
+_AGENTS_MD = open("AGENTS.md", encoding="utf-8").read()
 
 root_agent = adk.Agent(
     name="interview_practice_coach",
