@@ -1,29 +1,15 @@
-Attempt 5 — Full Answer, High Specificity, Confidence Partially Recovered (~4.5 minutes spoken)
-[Maximum detail, steadier tone — but self-awareness of the mid-series doubt remains]
-
-Situation:
 About eighteen months ago I was the project coordinator for a product launch with VP-level visibility and a six-week runway. The cross-functional team included two engineers, a UX designer, a QA lead, and a marketing manager — none of them reported to me.
 
-One of the engineers, a senior on their core team, had delivered modules two to three days late across four consecutive sprints. Each individual slip felt manageable in isolation, but when I tracked the cascade, those delays were consuming our testing buffer and pushing back the design review and marketing build-out. We were quietly losing ground.
+One of the engineers, a senior on their core team, had delivered modules two to three days late across four consecutive sprints. When I tracked the cascade, those delays were consuming our testing buffer and pushing back the design review and marketing build-out. We were quietly losing ground.
 
-Task:
-I needed to change the pattern without formal authority and without damaging the collaboration. My instinct was to avoid escalating to their manager — I've seen that approach create defensiveness and slow things down. But I'll be honest: partway through this situation, I started questioning that instinct. Maybe I should have involved a manager earlier. I still think the path I chose was right, but I held onto some uncertainty about that even after the project wrapped.
+I needed to change the pattern without formal authority and without damaging the collaboration. My instinct was to avoid escalating to their manager. But I'll be honest: partway through, I started questioning that instinct — maybe I should have involved a manager earlier. I still think the path I chose was right, but I held onto some uncertainty about it even after the project wrapped.
 
-Action:
-I started by doing my homework. I built a dependency map — each late deliverable, the specific downstream tasks it blocked, and the number of days of buffer we'd burned. I wanted to lead with data rather than frustration.
+I built a dependency map — each late deliverable, the downstream tasks it blocked, and the buffer days we'd burned. I wanted to lead with data rather than frustration.
 
-I asked the engineer if we could grab coffee. I kept the invite low-key — just "wanted to sync on the project." My plan was to spend the first part of the conversation listening before I introduced my concerns.
+I asked the engineer if we could grab coffee, keeping the invite casual. My plan was to listen before introducing my concerns. When I asked how things were going, they told me they were being assigned to P1 support incidents by a different team lead with no advance notice. They were genuinely trying to hold both responsibilities and losing ground on both.
 
-When I asked how things were going, they told me they were being assigned to P1 support incidents by a different team lead — with no advance notice and no capacity buffer written into their sprint. They were genuinely trying to hold both responsibilities and losing ground on both.
+That changed my framing. I shared the dependency map as shared context, then asked: "What would make it easier to protect time for this project?" They drove most of the solution: blocking 9am–12pm for focused project work and sending me a Slack message by EOD if a deliverable was at risk. On my end, I absorbed two lower-priority deliverables and set up a brief weekly 15-minute check-in.
 
-That changed my framing immediately. I shared the dependency map — not as an accusation, but as shared context. Then I asked: "What would make it easier to protect time for this project?" They came up with most of the solution: blocking 9am–12pm for focused project work, sending me a Slack message by EOD if a deliverable was at risk, and asking their team lead to surface P1 assignments 24 hours in advance where possible.
+Delivery consistency improved within the first week. When one external incident arose midway through, they flagged it two days early and we adjusted without downstream impact. We launched on time.
 
-On my end, I absorbed two lower-priority deliverables by redistributing them to another team member who had capacity, and I set up a brief weekly 15-minute check-in — just the two of us — so small blockers could surface before they became delays.
-
-Result:
-Delivery consistency improved within the first week. When one external incident did arise midway through, they flagged it two days early and we adjusted the schedule without any downstream impact. We launched on time.
-
-The outcome I'm most confident about is the one that's hardest to measure: the engineer said afterward that the conversation made them feel respected rather than managed. That mattered to me. I'm less confident about my own timing — I still wonder whether I let too many sprint cycles pass before acting, and whether I could have surfaced the support-ticket conflict through other channels sooner.
-
-What I'd carry forward:
-The most important thing I did right was listening before presenting. Understanding why the delays were happening changed everything about how the conversation went. What I'd do differently is act a week earlier — the data was clear by sprint two, and I waited until sprint four. Confidence in the approach shouldn't require waiting for the pattern to be undeniable.
+The outcome I'm most confident about is also the hardest to measure: the engineer said the conversation made them feel respected rather than managed. I'm less confident about my own timing — I still wonder whether I waited too long to act.

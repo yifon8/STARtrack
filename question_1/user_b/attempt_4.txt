@@ -1,20 +1,13 @@
-Attempt 4 — High Specificity, Confidence at Its Lowest (~3 minutes spoken)
-[Most detail, most uncertainty and self-doubt in tone]
-
-Situation:
 About eighteen months ago I was coordinating a product launch with a six-week runway. The team had two engineers, a UX designer, a QA lead, and a marketing manager — none of them reported to me. One of the engineers, a senior on their core team, was delivering modules two to three days late on average. I tracked it across four consecutive sprints, so it wasn't a one-off.
 
-Task:
 I wanted to address it without escalating to management. I've seen that go badly before and I didn't want to damage the relationship — though honestly, looking back, I'm not sure my instinct to avoid escalation was always the right one. Maybe I should have looped someone in sooner. I'm not entirely sure.
 
-Action:
 I built out a dependency map — each delayed deliverable and the downstream tasks it was blocking, with specific dates. I know that sounds thorough, but I wasn't confident it would land the right way. I was worried it might come across as accusatory even though I was trying to make it neutral.
 
-I asked for an informal coffee. I led with questions — asked how things were going on their end — which I think was the right instinct, though I fumbled a bit in how I transitioned to the actual concern. I said something like, "I wanted to share something I've been noticing, and I hope it's okay that I bring it up directly." Looking back, that framing might have been a bit hesitant.
+I asked for an informal coffee. I led with questions — asked how things were going — which I think was the right instinct, though I fumbled a bit in how I transitioned to the actual concern. I said something like, "I wanted to share something I've been noticing, and I hope it's okay I bring it up directly." Looking back, that framing might have been a bit hesitant.
 
 What I learned was that they were being assigned to critical support incidents by a different team lead — incidents tagged P1 — with no advance notice and no capacity buffer. That was genuinely not something I'd factored in.
 
 We landed on a few agreements: they'd block 9am–12pm daily for project work, send me a Slack message by EOD if a deliverable was at risk, and I'd work with another team member to absorb two lower-priority items from their list.
 
-Result:
 Delivery consistency improved over the following four weeks and we launched on time. I think the conversation helped, but I honestly still wonder if I could have handled it better — been more direct earlier, or found a way to surface the support-ticket conflict sooner. The outcome was good, but I'm not sure the path I took was the most efficient one.
