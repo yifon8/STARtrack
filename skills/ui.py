@@ -143,7 +143,10 @@ def _handle_reset(user_id: str):
 
 def _make_user_tab(user_id: str):
     with gr.Tab(user_id):
-        gr.Markdown(f"### Question\n{QUESTION_TEXT}")
+        gr.Markdown(
+            f"## Interview Question\n> {QUESTION_TEXT}",
+            elem_classes=["question-banner"],
+        )
 
         with gr.Row():
             with gr.Column():
@@ -199,7 +202,15 @@ def build_ui():
     Returns:
         gr.Blocks: The assembled Gradio demo object. Call .launch() to serve.
     """
-    with gr.Blocks(title="STARtrack Interview Practice Coach") as demo:
+    question_css = """
+    .question-banner {
+        background-color: #E8EEF4;
+        border-left: 4px solid #2C5F8A;
+        padding: 12px 16px;
+        border-radius: 4px;
+    }
+    """
+    with gr.Blocks(title="STARtrack Interview Practice Coach", css=question_css) as demo:
         gr.Markdown("# STARtrack — Interview Practice Coach")
         gr.Markdown(
             "Practice behavioral interview answers and track your progression across up to 5 attempts."
