@@ -233,20 +233,6 @@ def build_ui():
             for user_id in USERS:
                 _make_user_tab(user_id)
 
-        gr.Markdown("---")
-        gr.Markdown(
-            "**Bulk reset** — select a user and click Reset below to clear their history and PDFs."
-        )
-        with gr.Row():
-            reset_user_dropdown = gr.Dropdown(choices=USERS, label="Select user", value=USERS[0])
-            bulk_reset_btn = gr.Button("Reset selected user", variant="stop")
-        bulk_reset_status = gr.Textbox(label="Reset status", interactive=False)
-
-        bulk_reset_btn.click(
-            fn=_handle_reset,
-            inputs=[reset_user_dropdown],
-            outputs=[bulk_reset_status],
-        )
 
     return demo
 
