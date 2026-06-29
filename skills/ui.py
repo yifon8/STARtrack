@@ -144,23 +144,23 @@ def _handle_reset(user_id: str):
 def _make_user_tab(user_id: str):
     with gr.Tab(user_id):
         gr.Markdown(
-            f"## Interview Question\n> {QUESTION_TEXT}",
+            f"## Interview Question\n{QUESTION_TEXT}",
             elem_classes=["question-banner"],
         )
 
         with gr.Row():
             with gr.Column():
                 answer_text = gr.Textbox(
-                    label="Your answer (paste or type)",
-                    lines=8,
+                    label="Your answer (paste, type, or upload a .txt file below)",
+                    lines=10,
                     placeholder="Describe a situation where you influenced someone without authority...",
+                    elem_classes=["answer-box"],
                 )
                 submit_text_btn = gr.Button("Submit answer", variant="primary")
 
-                gr.Markdown("**— or —**")
+                gr.Markdown("**— or upload a .txt file —**")
 
                 upload_file = gr.File(label="Upload .txt file", file_types=[".txt"])
-                submit_file_btn = gr.Button("Submit file", variant="secondary")
 
             with gr.Column():
                 status_box = gr.Textbox(label="Status", interactive=False)
@@ -168,15 +168,23 @@ def _make_user_tab(user_id: str):
                 narrative_box = gr.Textbox(label="Progression narrative", lines=8, interactive=False)
                 pdf_output = gr.File(label="Download scoresheet PDF")
 
+        def _load_file_into_box(file_obj):
+            if file_obj is None:
+                return gr.update()
+            try:
+                return gr.update(value=Path(file_obj.name).read_text(encoding="utf-8").strip())
+            except Exception:
+                return gr.update()
+
+        upload_file.change(
+            fn=_load_file_into_box,
+            inputs=[upload_file],
+            outputs=[answer_text],
+        )
+
         submit_text_btn.click(
             fn=lambda text: _handle_text(user_id, text),
             inputs=[answer_text],
-            outputs=[scores_box, narrative_box, pdf_output, status_box],
-        )
-
-        submit_file_btn.click(
-            fn=lambda f: _handle_file(user_id, f),
-            inputs=[upload_file],
             outputs=[scores_box, narrative_box, pdf_output, status_box],
         )
 
@@ -208,6 +216,12 @@ def build_ui():
         border-left: 4px solid #2C5F8A;
         padding: 12px 16px;
         border-radius: 4px;
+    }
+    .question-banner p, .question-banner h2 {
+        font-size: 1.15rem !important;
+    }
+    .answer-box textarea {
+        font-size: 1.05rem !important;
     }
     """
     with gr.Blocks(title="STARtrack Interview Practice Coach", css=question_css) as demo:
