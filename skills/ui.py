@@ -143,9 +143,17 @@ def _handle_reset(user_id: str):
 
 def _make_user_tab(user_id: str):
     with gr.Tab(user_id):
-        gr.Markdown(
-            f"## Interview Question\n{QUESTION_TEXT}",
-            elem_classes=["question-banner"],
+        gr.HTML(
+            f"""<div style="background:#E8EEF4; border-left:4px solid #2C5F8A;
+                            padding:14px 18px; border-radius:4px; margin-bottom:8px;">
+                <div style="font-size:1rem; font-weight:700; color:#2C5F8A;
+                            text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">
+                    Interview Question
+                </div>
+                <div style="font-size:1.2rem; font-weight:500; color:#1a1a1a; line-height:1.5;">
+                    {QUESTION_TEXT}
+                </div>
+            </div>"""
         )
 
         with gr.Row():
@@ -210,21 +218,12 @@ def build_ui():
     Returns:
         gr.Blocks: The assembled Gradio demo object. Call .launch() to serve.
     """
-    question_css = """
-    .question-banner {
-        background-color: #E8EEF4;
-        border-left: 4px solid #2C5F8A;
-        padding: 12px 16px;
-        border-radius: 4px;
-    }
-    .question-banner p, .question-banner h2 {
-        font-size: 1.15rem !important;
-    }
+    answer_css = """
     .answer-box textarea {
         font-size: 1.05rem !important;
     }
     """
-    with gr.Blocks(title="STARtrack Interview Practice Coach", css=question_css) as demo:
+    with gr.Blocks(title="STARtrack Interview Practice Coach", css=answer_css) as demo:
         gr.Markdown("# STARtrack — Interview Practice Coach")
         gr.Markdown(
             "Practice behavioral interview answers and track your progression across up to 5 attempts."
