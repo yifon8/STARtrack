@@ -10,6 +10,10 @@ import json
 from pathlib import Path
 from typing import Optional
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import gradio as gr
 
 from skills.assessment import assess_answer
