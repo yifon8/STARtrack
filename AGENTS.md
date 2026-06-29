@@ -102,6 +102,12 @@ Each user has exactly 5 attempts against question_id: question_1.
 | `user_b` | Plateau attempts 1–3, breakthrough attempts 4–5 | Non-linear growth story |
 | `user_c` | Uneven — specificity up, confidence dips mid-series | Primary demo track |
 
+> **Assessment bias guard:** The "Progression shape" and "Primary use" columns above are
+> documentation for human developers only. When running `assess_answer()` or any scoring
+> function, ignore this table entirely. Score each transcript solely on its own content
+> against the rubric — do not adjust scores or expectations based on a user's known
+> progression shape or their designated role in the test suite.
+
 Source text files: `question_1/{user_id}/attempt_N.txt`
 Processed history: `history/{user_id}.jsonl`
 
