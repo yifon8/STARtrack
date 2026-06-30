@@ -30,7 +30,7 @@ QUESTION_TEXT = "Tell me about a time you had to influence someone without autho
 # Meta-eval is disabled by default to preserve free-tier quota.
 # Enable only if you have upgraded to a paid plan or have sufficient quota.
 # To enable: set ENABLE_META_EVAL = True
-ENABLE_META_EVAL = True
+ENABLE_META_EVAL = False
 
 
 def reset_progress(
