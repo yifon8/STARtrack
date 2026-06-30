@@ -9,6 +9,8 @@ outputs/*
 !outputs/.gitkeep
 db/*
 !db/.gitkeep
+history/*
+!history/.gitkeep
 
 # Python
 __pycache__/
