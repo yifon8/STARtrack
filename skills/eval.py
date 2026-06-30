@@ -40,7 +40,7 @@ import json
 import logging
 import os
 import time
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 from google import genai
 from google.genai import types as genai_types
@@ -213,13 +213,6 @@ def _get_client() -> genai.Client:
 def _clamp(value: float, lo: float = 0.0, hi: float = 1.0) -> float:
     return max(lo, min(hi, float(value)))
 
-
-def _find_history_record(history: list[dict], attempt_number: int) -> Optional[dict]:
-    """Return the history record for a given attempt_number, or None."""
-    for record in history:
-        if record.get("attempt_number") == attempt_number:
-            return record
-    return None
 
 
 def _judge_single_attempt(
