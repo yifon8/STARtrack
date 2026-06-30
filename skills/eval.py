@@ -8,7 +8,7 @@ Scores each assessment on two meta-dimensions:
   - actionability: Is one_specific_improvement concrete and attempt-specific?
 
 Implements before_tool_call / after_tool_call hooks for trajectory logging.
-Model: gemini-3.1-flash
+Model: gemini-3.1-flash-lite
 
 Entry point:
     run_meta_eval(history, assessments) -> dict
@@ -51,7 +51,7 @@ logger = logging.getLogger(__name__)
 # Constants
 # ------------------------------------------------------------------
 
-_MODEL = "gemini-3.1-flash"
+_MODEL = "gemini-3.1-flash-lite"
 
 # meta_score below this threshold gets flagged for human review
 _FLAG_THRESHOLD = 0.60
@@ -321,7 +321,7 @@ def run_meta_eval(
                      or sorted; this function matches on attempt_number.
         question_id: Active question identifier (informational; not used in
                      prompts for v1.0 since only question_1 exists).
-        model:       Override the judge model (default: gemini-3.1-flash).
+        model:       Override the judge model (default: gemini-3.1-flash-lite).
 
     Returns:
         dict keyed by attempt_number (int), each value containing:

@@ -20,11 +20,17 @@ from skills.assessment import assess_answer
 from skills.guardrails import semantic_gate, validate_session
 from skills.progression import save_session, analyze_progression, _load_history
 from skills.scoresheet import generate_scoresheet
+from skills.eval import run_meta_eval
 
 
 USERS = ["user_a", "user_b", "user_c"]
 QUESTION_ID = "question_1"
 QUESTION_TEXT = "Tell me about a time you had to influence someone without authority."
+
+# Meta-eval is disabled by default to preserve free-tier quota.
+# Enable only if you have upgraded to a paid plan or have sufficient quota.
+# To enable: set ENABLE_META_EVAL = True
+ENABLE_META_EVAL = True
 
 
 def reset_progress(
@@ -76,20 +82,20 @@ def _next_attempt_number(user_id: str) -> int:
 
 
 def _run_pipeline(user_id: str, transcript: str):
-    """Run the full pipeline and return (scores_json, narrative_text, pdf_path, status_msg)."""
+    """Run the full pipeline and return (scores_json, narrative_text, pdf_path, status_msg, meta_eval_text)."""
     gate = semantic_gate(transcript, QUESTION_ID)
     if not gate["passed"]:
-        return None, None, None, f"Blocked by guardrail: {gate['reason']}"
+        return None, None, None, f"Blocked by guardrail: {gate['reason']}", None
 
     attempt_number = _next_attempt_number(user_id)
     if attempt_number > 5:
-        return None, None, None, "Maximum of 5 attempts reached for this user."
+        return None, None, None, "Maximum of 5 attempts reached for this user.", None
 
     assessment = assess_answer(transcript, QUESTION_ID, user_id, attempt_number)
 
     validation = validate_session(assessment)
     if not validation["valid"]:
-        return None, None, None, f"Validation error: {validation['reason']}"
+        return None, None, None, f"Validation error: {validation['reason']}", None
 
     save_session(assessment)
 
@@ -112,24 +118,53 @@ def _run_pipeline(user_id: str, transcript: str):
 
     scores_display = json.dumps(assessment["scores"], indent=2)
 
-    return scores_display, narrative_text, pdf_path, f"Attempt {attempt_number} scored successfully."
+    # --- Meta-eval: LLM-as-judge check on this assessment's own quality.
+    # Disabled by default to preserve free-tier quota. Enable in code if needed.
+    # Best-effort and non-blocking: a judge failure should never prevent the
+    # candidate from seeing their score and PDF, since run_meta_eval scores
+    # the assessment Skill's output quality, not the candidate's answer.
+    meta_eval_text = None
+    if ENABLE_META_EVAL:
+        meta_eval_text = _run_meta_eval_safe(history, assessment)
+    else:
+        meta_eval_text = "(Meta-eval disabled to preserve quota. Enable in settings if needed.)"
+    return scores_display, narrative_text, pdf_path, f"Attempt {attempt_number} scored successfully.", meta_eval_text
 
+def _run_meta_eval_safe(history: list[dict], assessment: dict) -> str:
+    """Call run_meta_eval() for the just-saved assessment and format a short
+    display string. Never raises — any failure becomes a status note instead,
+    so the eval layer can never block the main scoring pipeline."""
+    try:
+        verdicts = run_meta_eval(history, [assessment])
+    except Exception as e:
+        return f"Meta-eval unavailable: {e}"
+    verdict = verdicts.get(assessment["attempt_number"])
+    if not verdict:
+        return "Meta-eval returned no result for this attempt."
+
+    flag = "⚠️ FLAGGED FOR REVIEW" if verdict["flagged"] else "✅ within expected range"
+    return (
+        f"Meta-eval (judge: {flag})\n"
+        f"  accuracy:      {verdict['accuracy_score']:.2f} — {verdict['accuracy_reason']}\n"
+        f"  actionability: {verdict['actionability_score']:.2f} — {verdict['actionability_reason']}\n"
+        f"  meta_score:    {verdict['meta_score']:.2f}"
+    )
 
 def _handle_text(user_id: str, text: str):
     if not text or not text.strip():
-        return None, None, None, "Please enter your answer text."
+        return None, None, None, "Please enter your answer text.", None
     return _run_pipeline(user_id, text.strip())
 
 
 def _handle_file(user_id: str, file_obj):
     if file_obj is None:
-        return None, None, None, "Please upload a .txt file."
+        return None, None, None, "Please upload a .txt file.", None
     try:
         transcript = Path(file_obj.name).read_text(encoding="utf-8").strip()
     except Exception as e:
-        return None, None, None, f"Could not read file: {e}"
+        return None, None, None, f"Could not read file: {e}", None
     if not transcript:
-        return None, None, None, "Uploaded file is empty."
+        return None, None, None, "Uploaded file is empty.", None
     return _run_pipeline(user_id, transcript)
 
 
@@ -175,6 +210,11 @@ def _make_user_tab(user_id: str):
                 scores_box = gr.Code(label="Scores (JSON)", language="json")
                 narrative_box = gr.Textbox(label="Progression narrative", lines=8, interactive=False)
                 pdf_output = gr.File(label="Download scoresheet PDF")
+                meta_eval_box = gr.Textbox(
+                    label="Meta-eval (LLM-as-judge on this assessment)",
+                    lines=5,
+                    interactive=False,
+                )
 
         def _load_file_into_box(file_obj):
             if file_obj is None:
@@ -193,7 +233,7 @@ def _make_user_tab(user_id: str):
         submit_text_btn.click(
             fn=lambda text: _handle_text(user_id, text),
             inputs=[answer_text],
-            outputs=[scores_box, narrative_box, pdf_output, status_box],
+            outputs=[scores_box, narrative_box, pdf_output, status_box, meta_eval_box],
         )
 
         gr.Markdown("---")
