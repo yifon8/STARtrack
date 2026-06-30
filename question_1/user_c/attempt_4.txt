@@ -1,18 +1,11 @@
-Attempt 4 — Breakthrough (~3 minutes spoken)
-[Sudden shift — STAR structure, specific detail, real insight emerges]
-
-Situation:
 About eighteen months ago I was coordinating a product launch with a six-week timeline. The team was cross-functional — two engineers, a designer, a QA lead, and a marketing manager — none of whom reported to me. One senior engineer had missed their deliverables by two to three days across four consecutive sprints. Each slip was small, but the cumulative effect was eating into our QA buffer and threatening the launch date.
 
-Task:
 I needed to course-correct without formal authority and without damaging the working relationship. Escalating to management felt like the wrong first move — I wanted to try to solve it directly.
 
-Action:
 Before the conversation, I built a dependency map showing exactly which downstream tasks each delay had blocked and by how many days. I wasn't trying to build a case against them — I wanted us both to see the same picture.
 
 I asked them for an informal coffee. I started by asking how things were going on their end, which turned out to matter: they told me they were being pulled into P1 support incidents by another team with no advance notice. That completely reframed the conversation. Instead of addressing a performance issue, we were solving a capacity problem together.
 
 We agreed on two things: they'd block their mornings for project work, and they'd send me a heads-up by end of day if a deliverable was at risk. I also redistributed two lower-priority items to another team member to reduce their load.
 
-Result:
 Their delivery cadence improved immediately. We launched on time. And that engineer told me afterward that the way I approached it made them feel like a partner, not a problem. That feedback stuck with me — it told me something about how influence actually works when you don't have a title behind you.
