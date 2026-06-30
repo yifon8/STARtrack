@@ -8,7 +8,7 @@ import pytest
 from pathlib import Path
 
 
-FIXTURE_TRANSCRIPT = Path("question_1/user_c/attempt_3.txt").read_text()
+FIXTURE_TRANSCRIPT = Path("question_1/user_c/attempt_3.txt").read_text(encoding="utf-8")
 FIXTURE_USER_ID = "user_c"
 FIXTURE_QUESTION_ID = "question_1"
 

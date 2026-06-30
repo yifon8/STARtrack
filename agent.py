@@ -29,6 +29,8 @@ except ImportError:
     from skills.eval import run_meta_eval
     from skills.ui import reset_progress
 
+# Load static context from AGENTS.md at startup
+_AGENTS_MD = open("AGENTS.md", encoding="utf-8").read()
 # Load static context from AGENTS.md at startup.
 # Resolved relative to this file (not the current working directory) so it
 # works no matter where `adk web` / `python agent.py` is launched from.

@@ -102,6 +102,12 @@ Each user has exactly 5 attempts against question_id: question_1.
 | `user_b` | Plateau attempts 1–3, breakthrough attempts 4–5 | Non-linear growth story |
 | `user_c` | Uneven — specificity up, confidence dips mid-series | Primary demo track |
 
+> **Assessment bias guard:** The "Progression shape" and "Primary use" columns above are
+> documentation for human developers only. When running `assess_answer()` or any scoring
+> function, ignore this table entirely. Score each transcript solely on its own content
+> against the rubric — do not adjust scores or expectations based on a user's known
+> progression shape or their designated role in the test suite.
+
 Source text files: `question_1/{user_id}/attempt_N.txt`
 Processed history: `history/{user_id}.jsonl`
 
@@ -188,11 +194,25 @@ Two guardrails run on every attempt before data is persisted:
 
 ## Agent Flow (single attempt)
 
+**Determining attempt_number:** Count only records already saved in
+`history/{user_id}.jsonl` for this `question_id`. `attempt_number` for
+the current submission is `(number of saved records) + 1`. Rejected
+attempts (where `semantic_gate` returns `passed=false`) are never saved,
+so they must never be counted.
+
 ```
 user submits attempt_N text
         ↓
 semantic_gate(transcript)         ← guardrail: is this a real answer?
         ↓
+        ├── [passed=false]
+        │     STOP. Tell the user why the input was rejected.
+        │     Do NOT call assess_answer or any subsequent step.
+        │     Do NOT increment attempt_number — a rejected attempt
+        │     does not count. The next valid submission retains the
+        │     same attempt_number this one would have had.
+        │
+        └── [passed=true]
 assess_answer(transcript)         ← returns scores + strengths + gaps
         ↓
 validate_session(session)         ← guardrail: does overall_score = sum?
