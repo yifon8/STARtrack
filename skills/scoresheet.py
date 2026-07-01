@@ -60,7 +60,7 @@ def _find_attempt(history: list[dict], attempt_number: int) -> dict:
     )
 
 
-def _render_radar_chart(scores: dict) -> io.BytesIO:
+def render_radar_chart(scores: dict) -> io.BytesIO:
     """Render a 5-axis radar chart of the current attempt's dimension scores."""
     labels = [DIMENSION_LABELS[d] for d in DIMENSIONS]
     values = [scores[d] for d in DIMENSIONS]
@@ -178,7 +178,7 @@ def generate_scoresheet(
     elements.append(Spacer(1, 0.25 * inch))
 
     # --- Radar chart (current attempt) ---
-    radar_buf = _render_radar_chart(scores)
+    radar_buf = render_radar_chart(scores)
     elements.append(Image(radar_buf, width=3.5 * inch, height=3.5 * inch))
     elements.append(Spacer(1, 0.2 * inch))
 
