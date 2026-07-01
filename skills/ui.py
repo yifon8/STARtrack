@@ -9,7 +9,6 @@ reset_progress clears a user's attempt history for a fresh start.
 import json
 from pathlib import Path
 from typing import Optional
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -27,10 +26,6 @@ USERS = ["user_a", "user_b", "user_c"]
 QUESTION_ID = "question_1"
 QUESTION_TEXT = "Tell me about a time you had to influence someone without authority."
 
-# Meta-eval is disabled by default to preserve free-tier quota.
-# Enable only if you have upgraded to a paid plan or have sufficient quota.
-# To enable: set ENABLE_META_EVAL = True
-ENABLE_META_EVAL = False
 
 
 def reset_progress(
@@ -85,17 +80,17 @@ def _run_pipeline(user_id: str, transcript: str):
     """Run the full pipeline and return (scores_json, narrative_text, pdf_path, status_msg, meta_eval_text)."""
     gate = semantic_gate(transcript, QUESTION_ID, user_id=user_id)
     if not gate["passed"]:
-        return None, None, None, f"Blocked by guardrail: {gate['reason']}", None
+        return None, None, None, f"Blocked by guardrail: {gate['reason']}"
 
     attempt_number = _next_attempt_number(user_id)
     if attempt_number > 5:
-        return None, None, None, "Maximum of 5 attempts reached for this user.", None
+        return None, None, None, "Maximum of 5 attempts reached for this user."
 
     assessment = assess_answer(transcript, QUESTION_ID, user_id, attempt_number)
 
     validation = validate_session(assessment)
     if not validation["valid"]:
-        return None, None, None, f"Validation error: {validation['reason']}", None
+        return None, None, None, f"Validation error: {validation['reason']}"
 
     save_session(assessment)
 
@@ -118,17 +113,22 @@ def _run_pipeline(user_id: str, transcript: str):
 
     scores_display = json.dumps(assessment["scores"], indent=2)
 
-    # --- Meta-eval: LLM-as-judge check on this assessment's own quality.
-    # Disabled by default to preserve free-tier quota. Enable in code if needed.
-    # Best-effort and non-blocking: a judge failure should never prevent the
-    # candidate from seeing their score and PDF, since run_meta_eval scores
-    # the assessment Skill's output quality, not the candidate's answer.
-    meta_eval_text = None
-    if ENABLE_META_EVAL:
-        meta_eval_text = _run_meta_eval_safe(history, assessment)
-    else:
-        meta_eval_text = "(Meta-eval disabled to preserve quota. Enable in settings if needed.)"
-    return scores_display, narrative_text, pdf_path, f"Attempt {attempt_number} scored successfully.", meta_eval_text
+    return scores_display, narrative_text, pdf_path, f"Attempt {attempt_number} scored successfully."
+
+def _handle_run_eval(user_id: str) -> str:
+    """Load the most recent saved assessment for this user and run the
+    LLM-as-judge meta-evaluation. Called only when the user clicks
+    'Run Eval' — never triggered automatically by submit.
+ 
+    Returns a formatted string for display in meta_eval_box."""
+    history = _load_history(user_id, QUESTION_ID, "history")
+    if not history:
+        return "No attempts on record for this user — submit an answer first."
+ 
+    # Use the most recent attempt as the assessment to judge.
+    latest = history[-1]
+    return _run_meta_eval_safe(history, latest)
+
 
 def _run_meta_eval_safe(history: list[dict], assessment: dict) -> str:
     """Call run_meta_eval() for the just-saved assessment and format a short
@@ -141,14 +141,20 @@ def _run_meta_eval_safe(history: list[dict], assessment: dict) -> str:
     verdict = verdicts.get(assessment["attempt_number"])
     if not verdict:
         return "Meta-eval returned no result for this attempt."
-
-    flag = "⚠️ FLAGGED FOR REVIEW" if verdict["flagged"] else "✅ within expected range"
+    flag = "⚠️ FLAGGED" if verdict["flagged"] else "✅ OK"
+ 
     return (
-        f"Meta-eval (judge: {flag})\n"
-        f"  accuracy:      {verdict['accuracy_score']:.2f} — {verdict['accuracy_reason']}\n"
-        f"  actionability: {verdict['actionability_score']:.2f} — {verdict['actionability_reason']}\n"
-        f"  meta_score:    {verdict['meta_score']:.2f}"
+        f"STATUS       {flag}\n"
+        f"─────────────────────────────────────────\n"
+        f"ACCURACY     {verdict['accuracy_score']:.2f}/1.00\n"
+        f"             {verdict['accuracy_reason']}\n"
+        f"\n"
+        f"ACTIONABLE   {verdict['actionability_score']:.2f}/1.00\n"
+        f"             {verdict['actionability_reason']}\n"
+        f"\n"
+        f"JUDGE SCORE  {verdict['meta_score']:.2f}/1.00"
     )
+    
 
 def _handle_text(user_id: str, text: str):
     if not text or not text.strip():
@@ -210,10 +216,16 @@ def _make_user_tab(user_id: str):
                 scores_box = gr.Code(label="Scores (JSON)", language="json")
                 narrative_box = gr.Textbox(label="Progression narrative", lines=8, interactive=False)
                 pdf_output = gr.File(label="Download scoresheet PDF")
+
+                gr.Markdown("---")
+                run_eval_btn = gr.Button("▶ Run Eval", variant="secondary")
                 meta_eval_box = gr.Textbox(
-                    label="Meta-eval (LLM-as-judge on this assessment)",
-                    lines=5,
+                    label="Meta-eval — LLM-as-judge verdict on the latest assessment",
+                    lines=6,
+                    max_lines=6,
                     interactive=False,
+                    placeholder="Click 'Run Eval' after submitting an answer to judge the quality of this assessment.",
+                    elem_id="meta-eval-box",
                 )
 
         def _load_file_into_box(file_obj):
@@ -233,7 +245,13 @@ def _make_user_tab(user_id: str):
         submit_text_btn.click(
             fn=lambda text: _handle_text(user_id, text),
             inputs=[answer_text],
-            outputs=[scores_box, narrative_box, pdf_output, status_box, meta_eval_box],
+            outputs=[scores_box, narrative_box, pdf_output, status_box],
+        )
+
+        run_eval_btn.click(
+            fn=lambda: _handle_run_eval(user_id),
+            inputs=[],
+            outputs=[meta_eval_box],
         )
 
         gr.Markdown("---")
@@ -249,18 +267,19 @@ def _make_user_tab(user_id: str):
 
 
 def build_ui():
-    """Construct and return the Gradio Blocks interface.
-
-    Wires up the full agent flow:
-      semantic_gate → assess_answer → validate_session → save_session
-      → [analyze_progression if attempt >= 2] → generate_scoresheet
-
-    Returns:
-        gr.Blocks: The assembled Gradio demo object. Call .launch() to serve.
-    """
+    """Construct and return the Gradio Blocks interface."""
     answer_css = """
     .answer-box textarea {
         font-size: 1.05rem !important;
+    }
+    #meta-eval-box textarea {
+        min-height: 130px !important;
+        max-height: 220px !important;
+        overflow-y: auto !important;
+        resize: none !important;
+        font-family: monospace;
+        font-size: 0.85rem !important;
+        line-height: 1.6 !important;
     }
     """
     with gr.Blocks(title="STARtrack Interview Practice Coach", css=answer_css) as demo:
