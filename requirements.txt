@@ -6,7 +6,9 @@
 #   1. git clone <repo> && cd <repo>
 #   2. cp .env.example .env  →  add your GOOGLE_API_KEY from aistudio.google.com
 #   3. pip install -r requirements.txt
-#   4. python agent.py   OR   adk web .
+#   4. python agent.py        CLI mode
+#      adk web .              ADK browser UI on http://localhost:8000
+#      python run_ui.py       Customized Gradio UI on http://localhost:7860
 
 # ── Core agent framework ───────────────────────────────────────────────────────
 google-adk==2.3.0          # ADK 2.x — Skills, FunctionTool, Runner, adk web UI

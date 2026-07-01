@@ -14,7 +14,9 @@ cp .env.example .env          # add your GOOGLE_API_KEY
 pip install -r requirements.txt
 python agent.py               # CLI mode
 # OR
-adk web .                     # browser UI on http://localhost:8000
+adk web .                     # ADK browser UI on http://localhost:8000
+# OR
+python run_ui.py              # Customized Gradio UI on http://localhost:7860
 ```
 
 ---
