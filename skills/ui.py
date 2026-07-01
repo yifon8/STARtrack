@@ -80,17 +80,17 @@ def _run_pipeline(user_id: str, transcript: str):
     """Run the full pipeline and return (scores_label, radar_image, narrative_text, pdf_path, status_msg)."""
     gate = semantic_gate(transcript, QUESTION_ID, user_id=user_id)
     if not gate["passed"]:
-        return None, None, None, None, f"Blocked by guardrail: {gate['reason']}"
+        return None, None, None, None, f"⚠️ Blocked: {gate['reason']}"
 
     attempt_number = _next_attempt_number(user_id)
     if attempt_number > 5:
-        return None, None, None, None, "Maximum of 5 attempts reached for this user."
+        return None, None, None, None, "⚠️ Maximum of 5 attempts reached for this user."
 
     assessment = assess_answer(transcript, QUESTION_ID, user_id, attempt_number)
 
     validation = validate_session(assessment)
     if not validation["valid"]:
-        return None, None, None, None, f"Validation error: {validation['reason']}"
+        return None, None, None, None, f"⚠️ Validation error: {validation['reason']}"
 
     save_session(assessment)
 
@@ -123,7 +123,7 @@ def _run_pipeline(user_id: str, transcript: str):
     radar_buf = render_radar_chart(assessment["scores"])
     radar_image = PILImage.open(radar_buf)
 
-    return scores_label, radar_image, narrative_text, pdf_path, f"Attempt {attempt_number} scored successfully."
+    return scores_label, radar_image, narrative_text, pdf_path, f"✅ Attempt {attempt_number} scored successfully."
 
 def _handle_run_eval(user_id: str) -> str:
     """Load the most recent saved assessment for this user and run the
@@ -168,19 +168,19 @@ def _run_meta_eval_safe(history: list[dict], assessment: dict) -> str:
 
 def _handle_text(user_id: str, text: str):
     if not text or not text.strip():
-        return None, None, None, None, "Please enter your answer text."
+        return None, None, None, None, "⚠️ Please enter your answer text."
     return _run_pipeline(user_id, text.strip())
 
 
 def _handle_file(user_id: str, file_obj):
     if file_obj is None:
-        return None, None, None, None, "Please upload a .txt file."
+        return None, None, None, None, "⚠️ Please upload a .txt file."
     try:
         transcript = Path(file_obj.name).read_text(encoding="utf-8").strip()
     except Exception as e:
-        return None, None, None, None, f"Could not read file: {e}"
+        return None, None, None, None, f"⚠️ Could not read file: {e}"
     if not transcript:
-        return None, None, None, None, "Uploaded file is empty."
+        return None, None, None, None, "⚠️ Uploaded file is empty."
     return _run_pipeline(user_id, transcript)
 
 
@@ -222,7 +222,7 @@ def _make_user_tab(user_id: str):
                 upload_file = gr.File(label="Upload .txt file", file_types=[".txt"])
 
             with gr.Column():
-                status_box = gr.Textbox(label="Status", interactive=False)
+                status_box = gr.Markdown(value="")
                 scores_label_box = gr.Markdown(label="Scores")
                 radar_image_box = gr.Image(label="Dimension Scores", show_label=False, type="pil")
                 narrative_box = gr.Textbox(label="Progression narrative", lines=8, interactive=False)
