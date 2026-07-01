@@ -1,5 +1,5 @@
 """
-Skill: SQLite persistence layer
+Skill: SQLite persistence layer (opt-in alternative)
 Owner: P3
 Depends on: progression.py (record shape) + history/*.jsonl files (seed data).
 
@@ -45,7 +45,7 @@ import json
 import sqlite3
 from datetime import date
 from pathlib import Path
-from typing import Optional
+import os
 
 DIMENSIONS = [
     "star_structure",
@@ -384,6 +384,9 @@ def load_history_db(
 
     with no other code changes required.
 
+    Mirrors .jsonl behavior: if the DB file doesn't exist, returns [] without
+    creating any files or directories (pure read-only, no side effects).
+
     Args:
         user_id: Progression track identifier (e.g. user_c).
         question_id: Filters records to a single question set.
@@ -391,10 +394,15 @@ def load_history_db(
 
     Returns:
         list[dict], sorted by attempt_number ascending. Empty list if the
-        table doesn't exist yet or the user has no records for this
-        question_id (mirrors the .jsonl version's "file not found -> []"
-        behavior rather than raising).
+        DB file doesn't exist or the table hasn't been created yet, or the
+        user has no records for this question_id (mirrors the .jsonl version's
+        "file not found -> []" behavior rather than raising or creating files).
     """
+    # Check if DB file exists before trying to connect; sqlite3.connect() creates
+    # the file, but we want to match .jsonl behavior (no filesystem side effects).
+    if not Path(db_path).exists():
+        return []
+
     try:
         conn = _get_connection(db_path)
     except sqlite3.Error:
@@ -435,15 +443,24 @@ def delete_user_history(
     so reset_progress() in ui.py keeps its existing "clear everything for
     this user" behavior after the SQLite swap.
 
+    Like load_history_db, this is a read-style operation that should not
+    create side effects: if the DB file doesn't exist, returns 0 without
+    creating the file or directories.
+
     Args:
         user_id: Progression track identifier to clear (e.g. user_c).
         db_path: Path to the SQLite database file.
 
     Returns:
-        Number of rows deleted. 0 if the table doesn't exist or the user
-        had no rows (mirrors the old "file not found" -> nothing-to-delete
-        case rather than raising).
+        Number of rows deleted. 0 if the DB file doesn't exist, or if the
+        table doesn't exist or the user had no rows (mirrors the old
+        "file not found" -> nothing-to-delete case rather than raising).
     """
+    # Check if DB file exists before trying to connect; sqlite3.connect() creates
+    # the file, but we want no filesystem side effects (matching .jsonl behavior).
+    if not Path(db_path).exists():
+        return 0
+
     try:
         conn = _get_connection(db_path)
     except sqlite3.Error:
