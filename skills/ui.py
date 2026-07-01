@@ -83,7 +83,7 @@ def _next_attempt_number(user_id: str) -> int:
 
 def _run_pipeline(user_id: str, transcript: str):
     """Run the full pipeline and return (scores_json, narrative_text, pdf_path, status_msg, meta_eval_text)."""
-    gate = semantic_gate(transcript, QUESTION_ID)
+    gate = semantic_gate(transcript, QUESTION_ID, user_id=user_id)
     if not gate["passed"]:
         return None, None, None, f"Blocked by guardrail: {gate['reason']}", None
 

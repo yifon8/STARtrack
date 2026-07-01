@@ -6,12 +6,11 @@ semantic_gate confirms the transcript is a plausible behavioral interview answer
 validate_session confirms overall_score equals the sum of the five dimension scores.
 """
 
+import difflib
 import json
 import os
+from pathlib import Path
 from typing import Optional
-
-from google import genai
-from google.genai import types as genai_types
 
 DIMENSIONS = [
     "star_structure",
@@ -28,6 +27,51 @@ _QUESTION_TEXT = {
 # Deterministic, no-API-call rejections for the most obvious garbage --
 # avoids spending a model call on input that's clearly not worth checking.
 _MIN_TRANSCRIPT_LENGTH = 10  # characters
+
+# Similarity ratio threshold for duplicate detection. Answers that are >=95%
+# similar (after normalization) to any prior attempt are considered duplicates.
+_DUPLICATE_SIMILARITY_THRESHOLD = 0.95
+
+
+def _normalize(text: str) -> str:
+    """Lowercase, strip, and collapse internal whitespace for comparison."""
+    return " ".join(text.lower().split())
+
+
+def _is_duplicate_transcript(
+    transcript: str,
+    user_id: str,
+    question_id: str,
+    history_dir: str = "history",
+) -> tuple[bool, int]:
+    """Check whether transcript is too similar to any prior attempt in history.
+
+    Returns (is_duplicate, matching_attempt_number). matching_attempt_number
+    is 0 if no duplicate is found.
+    """
+    history_file = Path(history_dir) / f"{user_id}.jsonl"
+    if not history_file.exists():
+        return False, 0
+
+    normalized_new = _normalize(transcript)
+    with history_file.open("r") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            record = json.loads(line)
+            if record.get("question_id") != question_id:
+                continue
+            past_transcript = record.get("transcript", "")
+            if not past_transcript:
+                continue
+            ratio = difflib.SequenceMatcher(
+                None, normalized_new, _normalize(past_transcript)
+            ).ratio()
+            if ratio >= _DUPLICATE_SIMILARITY_THRESHOLD:
+                return True, record.get("attempt_number", 0)
+
+    return False, 0
 
 _GATE_RESPONSE_SCHEMA = {
     "type": "object",
@@ -80,16 +124,21 @@ def semantic_gate(
     transcript: str,
     question_id: str = "question_1",
     model: str = "gemini-2.5-flash-lite",
+    user_id: Optional[str] = None,
+    history_dir: str = "history",
 ) -> dict:
     """Check whether a transcript is a plausible behavioral interview answer.
 
-    Uses an LLM call to detect garbage input, prompt injection attempts, or
-    text that is clearly unrelated to the active question before full assessment.
+    Runs deterministic pre-checks first (empty, too short, duplicate of a
+    prior attempt), then falls through to an LLM call for semantic checks.
 
     Args:
         transcript: Raw candidate answer text to evaluate.
         question_id: Active question identifier (used to anchor the relevance check).
         model: Model to use for the semantic check.
+        user_id: If provided, checks the transcript against prior attempts in
+                 history to reject re-submissions of the same answer.
+        history_dir: Directory containing per-user .jsonl history files.
 
     Returns:
         dict with keys: passed (bool), reason (str).
@@ -106,11 +155,27 @@ def semantic_gate(
             ),
         }
 
+    if user_id:
+        is_dup, prior_attempt = _is_duplicate_transcript(
+            transcript, user_id, question_id, history_dir
+        )
+        if is_dup:
+            return {
+                "passed": False,
+                "reason": (
+                    f"This answer is too similar to your attempt {prior_attempt}. "
+                    "Please submit a meaningfully different response."
+                ),
+            }
+
     api_key = os.environ.get("GOOGLE_API_KEY")
     if not api_key:
         raise RuntimeError(
             "GOOGLE_API_KEY is not set. Copy .env.example to .env and add your key."
         )
+
+    from google import genai  # noqa: PLC0415 — lazy import avoids load-time crash in test envs
+    from google.genai import types as genai_types
 
     client = genai.Client(api_key=api_key)
     prompt = _build_gate_prompt(transcript, question_id)

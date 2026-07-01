@@ -62,6 +62,125 @@ class TestSemanticGate:
         result = semantic_gate("hi")
         assert result["passed"] is False
 
+    def test_duplicate_answer_blocked_without_api_call(self, tmp_path):
+        """Resubmitting the same answer as a prior attempt is rejected
+        deterministically, without an API call."""
+        import json
+        from skills.guardrails import semantic_gate
+
+        _DIMS = ["star_structure", "specificity", "relevance", "confidence_language", "conciseness"]
+        prior_transcript = FIXTURE_TRANSCRIPT
+        scores = {dim: 2 for dim in _DIMS}
+        scores["overall_score"] = sum(scores[dim] for dim in _DIMS)
+        record = {
+            "question_id": FIXTURE_QUESTION_ID,
+            "user_id": FIXTURE_USER_ID,
+            "attempt_number": 1,
+            "date": "2026-01-01",
+            "source_file": None,
+            "transcription_method": "text_upload",
+            "transcript": prior_transcript,
+            "scores": scores,
+            "strengths": ["good"],
+            "gaps": ["needs work"],
+            "one_specific_improvement": "be more specific",
+        }
+        history_file = tmp_path / f"{FIXTURE_USER_ID}.jsonl"
+        history_file.write_text(json.dumps(record) + "\n")
+
+        result = semantic_gate(
+            prior_transcript,
+            question_id=FIXTURE_QUESTION_ID,
+            user_id=FIXTURE_USER_ID,
+            history_dir=str(tmp_path),
+        )
+        assert result["passed"] is False
+        assert "attempt 1" in result["reason"].lower()
+
+    def test_near_duplicate_answer_blocked(self, tmp_path):
+        """An answer with only minor whitespace/case changes is still rejected."""
+        import json
+        from skills.guardrails import semantic_gate
+
+        _DIMS = ["star_structure", "specificity", "relevance", "confidence_language", "conciseness"]
+        prior_transcript = FIXTURE_TRANSCRIPT
+        scores = {dim: 2 for dim in _DIMS}
+        scores["overall_score"] = sum(scores[dim] for dim in _DIMS)
+        record = {
+            "question_id": FIXTURE_QUESTION_ID,
+            "user_id": FIXTURE_USER_ID,
+            "attempt_number": 2,
+            "date": "2026-01-01",
+            "source_file": None,
+            "transcription_method": "text_upload",
+            "transcript": prior_transcript,
+            "scores": scores,
+            "strengths": ["good"],
+            "gaps": ["needs work"],
+            "one_specific_improvement": "be more specific",
+        }
+        history_file = tmp_path / f"{FIXTURE_USER_ID}.jsonl"
+        history_file.write_text(json.dumps(record) + "\n")
+
+        # Same content, different whitespace and capitalization
+        tweaked = "  " + prior_transcript.upper() + "  "
+        result = semantic_gate(
+            tweaked,
+            question_id=FIXTURE_QUESTION_ID,
+            user_id=FIXTURE_USER_ID,
+            history_dir=str(tmp_path),
+        )
+        assert result["passed"] is False
+
+    def test_different_answer_not_blocked(self, tmp_path):
+        """A genuinely different answer is not rejected by duplicate detection."""
+        import json
+        from skills.guardrails import semantic_gate
+
+        _DIMS = ["star_structure", "specificity", "relevance", "confidence_language", "conciseness"]
+        scores = {dim: 2 for dim in _DIMS}
+        scores["overall_score"] = sum(scores[dim] for dim in _DIMS)
+        record = {
+            "question_id": FIXTURE_QUESTION_ID,
+            "user_id": FIXTURE_USER_ID,
+            "attempt_number": 1,
+            "date": "2026-01-01",
+            "source_file": None,
+            "transcription_method": "text_upload",
+            "transcript": FIXTURE_TRANSCRIPT,
+            "scores": scores,
+            "strengths": ["good"],
+            "gaps": ["needs work"],
+            "one_specific_improvement": "be more specific",
+        }
+        history_file = tmp_path / f"{FIXTURE_USER_ID}.jsonl"
+        history_file.write_text(json.dumps(record) + "\n")
+
+        # Entirely different answer — duplicate gate should not block it;
+        # the LLM gate would still run, but we skip that here by using a
+        # transcript short enough to hit the length check before the API call.
+        # Instead assert is_duplicate returns False for a clearly different answer.
+        from skills.guardrails import _is_duplicate_transcript
+        different = (
+            "In my previous role I led a cross-functional team to redesign "
+            "the onboarding process by collaborating with engineering and design "
+            "stakeholders to align on requirements and deliver a phased rollout."
+        )
+        is_dup, _ = _is_duplicate_transcript(
+            different, FIXTURE_USER_ID, FIXTURE_QUESTION_ID, str(tmp_path)
+        )
+        assert is_dup is False
+
+    def test_no_history_no_duplicate_check(self, tmp_path):
+        """With no history file, duplicate detection passes through cleanly."""
+        from skills.guardrails import _is_duplicate_transcript
+
+        is_dup, attempt = _is_duplicate_transcript(
+            FIXTURE_TRANSCRIPT, FIXTURE_USER_ID, FIXTURE_QUESTION_ID, str(tmp_path)
+        )
+        assert is_dup is False
+        assert attempt == 0
+
 
 class TestAssessAnswer:
     def test_returns_all_schema_fields(self):
