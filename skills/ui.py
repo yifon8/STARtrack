@@ -257,12 +257,36 @@ def _make_user_tab(user_id: str):
         gr.Markdown("---")
         gr.Markdown("#### Reset progress")
         reset_btn = gr.Button(f"Clear all history for {user_id}", variant="stop")
+
+        with gr.Row(visible=False) as confirm_row:
+            gr.Markdown(
+                f"⚠️ **Are you sure you want to delete all history data for {user_id}?** This cannot be undone."
+            )
+            confirm_yes_btn = gr.Button("Yes, delete", variant="stop")
+            confirm_no_btn = gr.Button("Cancel", variant="secondary")
+
         reset_status = gr.Textbox(label="Reset status", interactive=False)
 
         reset_btn.click(
+            fn=lambda: gr.update(visible=True),
+            inputs=[],
+            outputs=[confirm_row],
+        )
+
+        confirm_no_btn.click(
+            fn=lambda: gr.update(visible=False),
+            inputs=[],
+            outputs=[confirm_row],
+        )
+
+        confirm_yes_btn.click(
             fn=lambda: _handle_reset(user_id),
             inputs=[],
             outputs=[reset_status],
+        ).then(
+            fn=lambda: gr.update(visible=False),
+            inputs=[],
+            outputs=[confirm_row],
         )
 
 
