@@ -115,16 +115,19 @@ def _run_pipeline(user_id: str, transcript: str):
 
     return scores_display, narrative_text, pdf_path, f"Attempt {attempt_number} scored successfully."
 
-def _handle_run_eval(user_id: str) -> str:
+def _handle_run_eval(user_id: str, submitted_this_session: bool) -> str:
     """Load the most recent saved assessment for this user and run the
     LLM-as-judge meta-evaluation. Called only when the user clicks
     'Run Eval' — never triggered automatically by submit.
- 
+
     Returns a formatted string for display in meta_eval_box."""
+    if not submitted_this_session:
+        return "No attempts submitted this session — submit an answer first."
+
     history = _load_history(user_id, QUESTION_ID, "history")
     if not history:
         return "No attempts on record for this user — submit an answer first."
- 
+
     # Use the most recent attempt as the assessment to judge.
     latest = history[-1]
     return _run_meta_eval_safe(history, latest)
@@ -197,6 +200,8 @@ def _make_user_tab(user_id: str):
             </div>"""
         )
 
+        submitted_this_session = gr.State(False)
+
         with gr.Row():
             with gr.Column():
                 answer_text = gr.Textbox(
@@ -236,6 +241,11 @@ def _make_user_tab(user_id: str):
             except Exception:
                 return gr.update()
 
+        def _handle_text_and_flag(text):
+            scores, narrative, pdf, status = _handle_text(user_id, text)
+            success = status is not None and "scored successfully" in status
+            return scores, narrative, pdf, status, success
+
         upload_file.change(
             fn=_load_file_into_box,
             inputs=[upload_file],
@@ -243,14 +253,14 @@ def _make_user_tab(user_id: str):
         )
 
         submit_text_btn.click(
-            fn=lambda text: _handle_text(user_id, text),
+            fn=_handle_text_and_flag,
             inputs=[answer_text],
-            outputs=[scores_box, narrative_box, pdf_output, status_box],
+            outputs=[scores_box, narrative_box, pdf_output, status_box, submitted_this_session],
         )
 
         run_eval_btn.click(
-            fn=lambda: _handle_run_eval(user_id),
-            inputs=[],
+            fn=lambda flag: _handle_run_eval(user_id, flag),
+            inputs=[submitted_this_session],
             outputs=[meta_eval_box],
         )
 
