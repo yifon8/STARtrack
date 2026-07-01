@@ -411,6 +411,109 @@ class TestGenerateScoresheet:
             )
 
 
+class TestResetProgress:
+    def test_confirm_guard_prevents_accidental_deletion(self, tmp_path):
+        """reset_progress(confirm=False) must not delete the history file."""
+        from skills.ui import reset_progress
+
+        history_file = tmp_path / "user_a.jsonl"
+        history_file.write_text('{"attempt_number": 1}\n')
+
+        result = reset_progress("user_a", history_dir=str(tmp_path), confirm=False)
+
+        assert result["success"] is False
+        assert history_file.exists(), "file must not be deleted without confirm=True"
+
+
+class TestRunPipeline:
+    def test_guardrail_blocks_pipeline(self):
+        """semantic_gate returning failed stops the pipeline before assess_answer is called."""
+        from unittest.mock import patch
+        from skills.ui import _run_pipeline
+
+        with patch("skills.ui.semantic_gate", return_value={"passed": False, "reason": "not an interview answer"}), \
+             patch("skills.ui.assess_answer") as mock_assess:
+            scores, narrative, pdf, status, meta = _run_pipeline("user_a", "some text")
+
+        assert scores is None
+        assert "Blocked" in status
+        mock_assess.assert_not_called()
+
+    def test_max_attempts_cap(self):
+        """A 6th attempt returns the cap message without calling assess_answer."""
+        from unittest.mock import patch
+        from skills.ui import _run_pipeline
+
+        with patch("skills.ui.semantic_gate", return_value={"passed": True, "reason": "ok"}), \
+             patch("skills.ui._next_attempt_number", return_value=6), \
+             patch("skills.ui.assess_answer") as mock_assess:
+            scores, narrative, pdf, status, meta = _run_pipeline("user_a", "some valid answer text here")
+
+        assert scores is None
+        assert "Maximum" in status
+        mock_assess.assert_not_called()
+
+    def test_validation_failure_surfaces_to_user(self):
+        """validate_session returning invalid stops the pipeline before save_session."""
+        from unittest.mock import patch
+        from skills.ui import _run_pipeline
+
+        fake_assessment = _make_session(attempt_number=1, overall=8, user_id="user_a")
+
+        with patch("skills.ui.semantic_gate", return_value={"passed": True, "reason": "ok"}), \
+             patch("skills.ui._next_attempt_number", return_value=1), \
+             patch("skills.ui.assess_answer", return_value=fake_assessment), \
+             patch("skills.ui.validate_session", return_value={"valid": False, "reason": "overall_score mismatch"}), \
+             patch("skills.ui.save_session") as mock_save:
+            scores, narrative, pdf, status, meta = _run_pipeline("user_a", "some valid answer")
+
+        assert scores is None
+        assert "Validation error" in status
+        assert "overall_score mismatch" in status
+        mock_save.assert_not_called()
+
+    def test_successful_pipeline_returns_all_outputs(self, tmp_path):
+        """Happy path: valid transcript returns scores, narrative text, and PDF path."""
+        from unittest.mock import patch
+        from skills.ui import _run_pipeline
+
+        fake_assessment = _make_session(attempt_number=1, overall=8, user_id="user_a")
+        fake_pdf_path = str(tmp_path / "user_a_attempt_1.pdf")
+
+        with patch("skills.ui.semantic_gate", return_value={"passed": True, "reason": "ok"}), \
+             patch("skills.ui._next_attempt_number", return_value=1), \
+             patch("skills.ui.assess_answer", return_value=fake_assessment), \
+             patch("skills.ui.validate_session", return_value={"valid": True, "expected_overall": 8}), \
+             patch("skills.ui.save_session"), \
+             patch("skills.ui._load_history", return_value=[fake_assessment]), \
+             patch("skills.ui.generate_scoresheet", return_value=fake_pdf_path):
+            scores, narrative, pdf, status, meta = _run_pipeline("user_a", "some valid answer text")
+
+        assert scores is not None
+        assert pdf == fake_pdf_path
+        assert "Attempt 1 scored successfully" in status
+
+    def test_progression_narrative_absent_on_attempt_1(self):
+        """analyze_progression is never called on attempt 1."""
+        from unittest.mock import patch
+        from skills.ui import _run_pipeline
+
+        fake_assessment = _make_session(attempt_number=1, overall=8, user_id="user_a")
+
+        with patch("skills.ui.semantic_gate", return_value={"passed": True, "reason": "ok"}), \
+             patch("skills.ui._next_attempt_number", return_value=1), \
+             patch("skills.ui.assess_answer", return_value=fake_assessment), \
+             patch("skills.ui.validate_session", return_value={"valid": True, "expected_overall": 8}), \
+             patch("skills.ui.save_session"), \
+             patch("skills.ui._load_history", return_value=[fake_assessment]), \
+             patch("skills.ui.generate_scoresheet", return_value="some/path.pdf"), \
+             patch("skills.ui.analyze_progression") as mock_progression:
+            scores, narrative, pdf, status, meta = _run_pipeline("user_a", "some valid answer text")
+
+        mock_progression.assert_not_called()
+        assert "First attempt" in narrative
+
+
 class TestFullFlow:
     @pytest.mark.skip(reason="validate_session(), save_session(), and generate_scoresheet() is not implemented yet")
     def test_end_to_end_single_attempt(self, tmp_path):
