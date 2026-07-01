@@ -1,14 +1,14 @@
-About two years ago, I was coordinating a high-visibility product launch at my company. The team spanned engineering, design, and marketing — none of whom reported to me. About six weeks before launch, I noticed that one of the senior developers was consistently missing internal deadlines by two to three days. Each slip was small on its own, but when compounded, it was threatening our launch date.
+About two years ago, I was coordinating a high-visibility product launch at my company. The team spanned engineering, design, and marketing — none of whom reported to me. About six weeks before launch, one of the senior developers was consistently missing internal deadlines by two to three days. Each slip was small on its own, but compounded, it was threatening our launch date.
 
 My job was to keep the project on track, but I had no formal authority to direct this person's work. Escalating to their manager felt like a last resort — it could create defensiveness and harm the collaborative dynamic we needed. So I needed to influence them through relationship and reasoning alone.
 
-First, I did some homework. I mapped out exactly how each of their delays rippled through the rest of the project — the specific tasks that couldn't start, the reviewers who were blocked, the buffer days we were burning. I wanted to show impact, not just express frustration.
+First, I did some homework. I mapped out how each of their delays rippled through the rest of the project — the specific tasks that couldn't start, the buffer days we were burning. I wanted to show impact, not just express frustration.
 
-Then I asked to grab coffee with them — low stakes, no agenda on the calendar invite. Once we sat down, I started by acknowledging that they were clearly juggling a lot. That opened the door for them to share that they were being pulled into urgent support requests by a different team mid-sprint.
+Then I asked to grab coffee — low stakes, no agenda on the calendar invite. Once we sat down, I started by acknowledging that they were clearly juggling a lot. That opened the door: they were being pulled into urgent support requests by a different team mid-sprint.
 
-With that context, we had a real conversation. I showed them the cascade diagram I'd prepared and asked, "What would make it easier to protect your time for this project?" They came up with most of the solution themselves: blocking their mornings for project work, sending a quick Slack message if something was going to slip before it actually did, and looping me in earlier.
+With that context, we had a real conversation. I showed them the cascade diagram and asked, "What would make it easier to protect your time for this project?" They came up with most of the solution: blocking their mornings for project work, sending a quick Slack message before anything slipped, and looping me in earlier.
 
-I also took some action on my end — I worked with another team member to absorb two of the lower-priority deliverables so the developer could focus on what was most critical.
+I also worked with another team member to absorb two lower-priority deliverables so the developer could focus on what mattered most.
 
-Their delivery consistency improved dramatically over the next few weeks. We launched the product on time. After the project wrapped, the developer specifically mentioned in our team retrospective that the way I'd approached the conversation made them feel respected rather than called out. That stood out to me — it confirmed that how you influence someone matters just as much as the outcome you're trying to reach.
+Their delivery consistency improved over the next few weeks. We launched on time. At the retrospective, the developer mentioned that the way I'd approached the conversation made them feel respected rather than called out. It confirmed that how you influence someone matters just as much as the outcome you're trying to reach.
 
