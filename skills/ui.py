@@ -97,7 +97,14 @@ def _run_pipeline(user_id: str, transcript: str):
     history = _load_history(user_id, QUESTION_ID, "history")
 
     narrative = None
-    narrative_text = "First attempt — complete a second attempt to see progression analysis."
+    if attempt_number == 1:
+        strengths = assessment.get("strengths") or []
+        gaps = assessment.get("gaps") or []
+        improvement = assessment.get("one_specific_improvement", "")
+        narrative_text = "Trend: N/A (Only 1 attempt thus far)\n\n"
+        narrative_text += "Strengths\n" + "\n".join(f"• {s}" for s in strengths)
+        narrative_text += "\n\nGaps\n" + "\n".join(f"• {g}" for g in gaps)
+        narrative_text += f"\n\nOne Specific Improvement\n{improvement}"
     if attempt_number >= 2:
         narrative = analyze_progression(user_id, QUESTION_ID)
         narrative_text = (
