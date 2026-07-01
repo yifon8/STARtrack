@@ -177,8 +177,8 @@ def _handle_reset(user_id: str):
     return result["message"]
 
 
-def _make_user_tab(user_id: str):
-    with gr.Tab(user_id):
+def _make_user_tab(user_id: str) -> gr.Tab:
+    with gr.Tab(user_id) as tab:
         gr.HTML(
             f"""<div style="background:#E8EEF4; border-left:4px solid #2C5F8A;
                             padding:14px 18px; border-radius:4px; margin-bottom:8px;">
@@ -236,17 +236,7 @@ def _make_user_tab(user_id: str):
             inputs=[answer_text],
             outputs=[scores_box, narrative_box, pdf_output, status_box, meta_eval_box],
         )
-
-        gr.Markdown("---")
-        gr.Markdown("#### Reset progress")
-        reset_btn = gr.Button(f"Clear all history for {user_id}", variant="stop")
-        reset_status = gr.Textbox(label="Reset status", interactive=False)
-
-        reset_btn.click(
-            fn=lambda: _handle_reset(user_id),
-            inputs=[],
-            outputs=[reset_status],
-        )
+    return tab
 
 
 def _run_integration_tests() -> str:
@@ -260,21 +250,6 @@ def _run_integration_tests() -> str:
     output = result.stdout + result.stderr
     return output.strip() or "(no output)"
 
-
-def _clear_all_history() -> str:
-    """Delete history files and output PDFs for all users."""
-    deleted = []
-    for user_id in USERS:
-        history_path = Path("history") / f"{user_id}.jsonl"
-        if history_path.exists():
-            history_path.unlink()
-            deleted.append(str(history_path))
-        for pdf in Path("outputs").glob(f"{user_id}_attempt_*.pdf"):
-            pdf.unlink(missing_ok=True)
-            deleted.append(str(pdf))
-    if not deleted:
-        return "Nothing to delete — history is already empty."
-    return "Deleted:\n" + "\n".join(f"  {p}" for p in deleted)
 
 
 def _run_eval_for_user(user_id: str) -> str:
@@ -321,9 +296,16 @@ def build_ui():
             "Practice behavioral interview answers and track your progression across up to 5 attempts."
         )
 
-        with gr.Tabs():
+        active_user = gr.State(value=USERS[0])
+
+        with gr.Tabs() as tabs:
             for user_id in USERS:
-                _make_user_tab(user_id)
+                tab = _make_user_tab(user_id)
+                tab.select(
+                    fn=lambda uid=user_id: uid,
+                    inputs=[],
+                    outputs=[active_user],
+                )
 
         gr.HTML("<hr style='margin:24px 0;'>")
 
@@ -334,12 +316,12 @@ def build_ui():
             )
 
             with gr.Row():
-                clear_all_btn = gr.Button("Clear ALL user history", variant="stop")
-            clear_all_status = gr.Textbox(label="Result", interactive=False, lines=5)
-            clear_all_btn.click(
-                fn=_clear_all_history,
-                inputs=[],
-                outputs=[clear_all_status],
+                clear_user_btn = gr.Button("Clear history for selected user", variant="stop")
+            clear_user_status = gr.Textbox(label="Result", interactive=False, lines=3)
+            clear_user_btn.click(
+                fn=_handle_reset,
+                inputs=[active_user],
+                outputs=[clear_user_status],
             )
 
             gr.HTML("<hr style='margin:16px 0;'>")
