@@ -6,10 +6,10 @@ Exposes the full agent flow as a chat-style UI on http://localhost:7860.
 reset_progress clears a user's attempt history for a fresh start.
 """
 
-import json
 from pathlib import Path
 from typing import Optional
 from dotenv import load_dotenv
+from PIL import Image as PILImage
 
 load_dotenv()
 
@@ -18,7 +18,7 @@ import gradio as gr
 from skills.assessment import assess_answer
 from skills.guardrails import semantic_gate, validate_session
 from skills.progression import save_session, analyze_progression, _load_history
-from skills.scoresheet import generate_scoresheet
+from skills.scoresheet import generate_scoresheet, render_radar_chart
 from skills.eval import run_meta_eval
 
 
@@ -77,20 +77,20 @@ def _next_attempt_number(user_id: str) -> int:
 
 
 def _run_pipeline(user_id: str, transcript: str):
-    """Run the full pipeline and return (scores_json, narrative_text, pdf_path, status_msg, meta_eval_text)."""
+    """Run the full pipeline and return (scores_label, radar_image, narrative_text, pdf_path, status_msg)."""
     gate = semantic_gate(transcript, QUESTION_ID, user_id=user_id)
     if not gate["passed"]:
-        return None, None, None, f"Blocked by guardrail: {gate['reason']}"
+        return None, None, None, None, f"Blocked by guardrail: {gate['reason']}"
 
     attempt_number = _next_attempt_number(user_id)
     if attempt_number > 5:
-        return None, None, None, "Maximum of 5 attempts reached for this user."
+        return None, None, None, None, "Maximum of 5 attempts reached for this user."
 
     assessment = assess_answer(transcript, QUESTION_ID, user_id, attempt_number)
 
     validation = validate_session(assessment)
     if not validation["valid"]:
-        return None, None, None, f"Validation error: {validation['reason']}"
+        return None, None, None, None, f"Validation error: {validation['reason']}"
 
     save_session(assessment)
 
@@ -111,9 +111,12 @@ def _run_pipeline(user_id: str, transcript: str):
 
     pdf_path = generate_scoresheet(history, narrative, user_id, attempt_number)
 
-    scores_display = json.dumps(assessment["scores"], indent=2)
+    overall = assessment["scores"]["overall_score"]
+    scores_label = f"**Overall Score: {overall} / 15**"
+    radar_buf = render_radar_chart(assessment["scores"])
+    radar_image = PILImage.open(radar_buf)
 
-    return scores_display, narrative_text, pdf_path, f"Attempt {attempt_number} scored successfully."
+    return scores_label, radar_image, narrative_text, pdf_path, f"Attempt {attempt_number} scored successfully."
 
 def _handle_run_eval(user_id: str) -> str:
     """Load the most recent saved assessment for this user and run the
@@ -158,19 +161,19 @@ def _run_meta_eval_safe(history: list[dict], assessment: dict) -> str:
 
 def _handle_text(user_id: str, text: str):
     if not text or not text.strip():
-        return None, None, None, "Please enter your answer text.", None
+        return None, None, None, None, "Please enter your answer text."
     return _run_pipeline(user_id, text.strip())
 
 
 def _handle_file(user_id: str, file_obj):
     if file_obj is None:
-        return None, None, None, "Please upload a .txt file.", None
+        return None, None, None, None, "Please upload a .txt file."
     try:
         transcript = Path(file_obj.name).read_text(encoding="utf-8").strip()
     except Exception as e:
-        return None, None, None, f"Could not read file: {e}", None
+        return None, None, None, None, f"Could not read file: {e}"
     if not transcript:
-        return None, None, None, "Uploaded file is empty.", None
+        return None, None, None, None, "Uploaded file is empty."
     return _run_pipeline(user_id, transcript)
 
 
@@ -213,7 +216,8 @@ def _make_user_tab(user_id: str):
 
             with gr.Column():
                 status_box = gr.Textbox(label="Status", interactive=False)
-                scores_box = gr.Code(label="Scores (JSON)", language="json")
+                scores_label_box = gr.Markdown(label="Scores")
+                radar_image_box = gr.Image(label="Dimension Scores", show_label=False, type="pil")
                 narrative_box = gr.Textbox(label="Progression narrative", lines=8, interactive=False)
                 pdf_output = gr.File(label="Download scoresheet PDF")
 
@@ -245,7 +249,7 @@ def _make_user_tab(user_id: str):
         submit_text_btn.click(
             fn=lambda text: _handle_text(user_id, text),
             inputs=[answer_text],
-            outputs=[scores_box, narrative_box, pdf_output, status_box],
+            outputs=[scores_label_box, radar_image_box, narrative_box, pdf_output, status_box],
         )
 
         run_eval_btn.click(
