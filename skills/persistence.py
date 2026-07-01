@@ -400,7 +400,8 @@ def load_history_db(
     """
     # Check if DB file exists before trying to connect; sqlite3.connect() creates
     # the file, but we want to match .jsonl behavior (no filesystem side effects).
-    if not Path(db_path).exists():
+    
+    if db_path != ":memory:" and not Path(db_path).exists():
         return []
 
     try:
@@ -458,8 +459,8 @@ def delete_user_history(
     """
     # Check if DB file exists before trying to connect; sqlite3.connect() creates
     # the file, but we want no filesystem side effects (matching .jsonl behavior).
-    if not Path(db_path).exists():
-        return 0
+    if db_path != ":memory:" and not Path(db_path).exists():
+         return 0
 
     try:
         conn = _get_connection(db_path)
