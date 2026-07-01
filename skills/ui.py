@@ -7,6 +7,7 @@ reset_progress clears a user's attempt history for a fresh start.
 """
 
 import json
+import subprocess
 from pathlib import Path
 from typing import Optional
 
@@ -248,6 +249,57 @@ def _make_user_tab(user_id: str):
         )
 
 
+def _run_integration_tests() -> str:
+    """Run pytest integration_test.py and return captured output."""
+    result = subprocess.run(
+        ["python", "-m", "pytest", "tests/integration_test.py", "-v", "--tb=short"],
+        capture_output=True,
+        text=True,
+        cwd=Path(__file__).parent.parent,
+    )
+    output = result.stdout + result.stderr
+    return output.strip() or "(no output)"
+
+
+def _clear_all_history() -> str:
+    """Delete history files and output PDFs for all users."""
+    deleted = []
+    for user_id in USERS:
+        history_path = Path("history") / f"{user_id}.jsonl"
+        if history_path.exists():
+            history_path.unlink()
+            deleted.append(str(history_path))
+        for pdf in Path("outputs").glob(f"{user_id}_attempt_*.pdf"):
+            pdf.unlink(missing_ok=True)
+            deleted.append(str(pdf))
+    if not deleted:
+        return "Nothing to delete — history is already empty."
+    return "Deleted:\n" + "\n".join(f"  {p}" for p in deleted)
+
+
+def _run_eval_for_user(user_id: str) -> str:
+    """Run meta-eval on all saved assessments for a user and return formatted results."""
+    history = _load_history(user_id, QUESTION_ID, "history")
+    if not history:
+        return f"No history found for {user_id}. Submit at least one attempt first."
+    try:
+        verdicts = run_meta_eval(history, history)
+    except Exception as e:
+        return f"Meta-eval failed: {e}"
+
+    lines = [f"Meta-eval results for {user_id} ({len(verdicts)} attempt(s)):\n"]
+    for attempt_num in sorted(verdicts):
+        v = verdicts[attempt_num]
+        flag = "⚠️ FLAGGED" if v["flagged"] else "✅ OK"
+        lines.append(
+            f"Attempt {attempt_num} — {flag}\n"
+            f"  accuracy:      {v['accuracy_score']:.2f} — {v['accuracy_reason']}\n"
+            f"  actionability: {v['actionability_score']:.2f} — {v['actionability_reason']}\n"
+            f"  meta_score:    {v['meta_score']:.2f}\n"
+        )
+    return "\n".join(lines)
+
+
 def build_ui():
     """Construct and return the Gradio Blocks interface.
 
@@ -273,6 +325,62 @@ def build_ui():
             for user_id in USERS:
                 _make_user_tab(user_id)
 
+        gr.HTML("<hr style='margin:24px 0;'>")
+
+        with gr.Accordion("🛠 Dev Tools", open=False):
+            gr.Markdown(
+                "_Internal tools for coaches and developers. "
+                "These actions are irreversible — use with care._"
+            )
+
+            with gr.Row():
+                clear_all_btn = gr.Button("Clear ALL user history", variant="stop")
+            clear_all_status = gr.Textbox(label="Result", interactive=False, lines=5)
+            clear_all_btn.click(
+                fn=_clear_all_history,
+                inputs=[],
+                outputs=[clear_all_status],
+            )
+
+            gr.HTML("<hr style='margin:16px 0;'>")
+
+            with gr.Row():
+                run_tests_btn = gr.Button("Run integration tests", variant="secondary")
+            tests_output = gr.Textbox(
+                label="Test output",
+                interactive=False,
+                lines=20,
+                max_lines=40,
+            )
+            run_tests_btn.click(
+                fn=_run_integration_tests,
+                inputs=[],
+                outputs=[tests_output],
+            )
+
+            gr.HTML("<hr style='margin:16px 0;'>")
+
+            gr.Markdown(
+                "**Run eval** — manually trigger a meta-evaluation of the "
+                "assessment quality for a user's current attempt history."
+            )
+            with gr.Row():
+                eval_user_dropdown = gr.Dropdown(
+                    choices=USERS,
+                    value=USERS[0],
+                    label="Select user",
+                )
+                run_eval_btn = gr.Button("Run eval", variant="secondary")
+            eval_output = gr.Textbox(
+                label="Eval results",
+                interactive=False,
+                lines=12,
+            )
+            run_eval_btn.click(
+                fn=_run_eval_for_user,
+                inputs=[eval_user_dropdown],
+                outputs=[eval_output],
+            )
 
     return demo
 
