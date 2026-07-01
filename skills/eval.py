@@ -51,7 +51,7 @@ logger = logging.getLogger(__name__)
 # Constants
 # ------------------------------------------------------------------
 
-_MODEL = "gemini-3.1-flash-lite"
+_MODEL = "gemini-3.5-flash"
 
 # meta_score below this threshold gets flagged for human review
 _FLAG_THRESHOLD = 0.60
