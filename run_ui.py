@@ -6,7 +6,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-# Gradio uses a renamed Starlette constant; suppress until Gradio fixes it upstream.
-warnings.filterwarnings("ignore", category=DeprecationWarning, module="gradio")
+# Gradio accesses a renamed Starlette constant; the warning originates from starlette.status.
+warnings.filterwarnings("ignore", message=".*HTTP_422_UNPROCESSABLE_ENTITY.*")
+warnings.filterwarnings("ignore", category=DeprecationWarning, module=r"starlette\..*")
 
 runpy.run_module("skills.ui", run_name="__main__")
