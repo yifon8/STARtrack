@@ -1,15 +1,13 @@
 About eighteen months ago I was the project coordinator for a product launch with VP-level visibility and a six-week runway. The cross-functional team included two engineers, a UX designer, a QA lead, and a marketing manager — none of them reported to me.
 
-One of the engineers, a senior on their core team, had delivered modules two to three days late across four consecutive sprints. When I tracked the cascade, those delays were consuming our testing buffer and pushing back the design review and marketing build-out. We were quietly losing ground.
+One of the senior engineers had delivered every module two to three days late across four consecutive sprints. I tracked the cascade: those delays were consuming our QA buffer, compressing the design review, and pushing back the marketing build-out. We were losing ground.
 
-I needed to change the pattern without formal authority and without damaging the collaboration. My instinct was to avoid escalating to their manager. But I'll be honest: partway through, I started questioning that instinct — maybe I should have involved a manager earlier. I still think the path I chose was right, but I held onto some uncertainty about it even after the project wrapped.
+Before starting any conversation, I built a dependency map — each late deliverable, the downstream tasks it blocked, and the total buffer days consumed. I wanted to lead with shared data, not frustration.
 
-I built a dependency map — each late deliverable, the downstream tasks it blocked, and the buffer days we'd burned. I wanted to lead with data rather than frustration.
+I asked the engineer if we could grab coffee, keeping the invite casual. I opened with a question: how were things going? They told me they were being pulled into P1 support incidents by another team lead, mid-sprint, with no advance notice and no capacity buffer. They were managing two high-demand roles simultaneously.
 
-I asked the engineer if we could grab coffee, keeping the invite casual. My plan was to listen before introducing my concerns. When I asked how things were going, they told me they were being assigned to P1 support incidents by a different team lead with no advance notice. They were genuinely trying to hold both responsibilities and losing ground on both.
+I shared the dependency map as context we both needed, then asked: "What would make it easier to protect your time for this project?" They drove most of the solution — blocking 9am to noon for focused project work and sending me a Slack message by end of day if anything was at risk. I redistributed two of their lower-priority deliverables to a teammate with capacity and set up a 15-minute weekly check-in.
 
-That changed my framing. I shared the dependency map as shared context, then asked: "What would make it easier to protect time for this project?" They drove most of the solution: blocking 9am–12pm for focused project work and sending me a Slack message by EOD if a deliverable was at risk. On my end, I absorbed two lower-priority deliverables and set up a brief weekly 15-minute check-in.
+Their delivery improved within a week. When an external incident came up three weeks later, they flagged it two days ahead. We adjusted and launched on time.
 
-Delivery consistency improved within the first week. When one external incident arose midway through, they flagged it two days early and we adjusted without downstream impact. We launched on time.
-
-The outcome I'm most confident about is also the hardest to measure: the engineer said the conversation made them feel respected rather than managed. I'm less confident about my own timing — I still wonder whether I waited too long to act.
+At the retrospective, they said unprompted that I had come in curious rather than critical — and that it made them want to come through for the team. That feedback told me more about effective influence than any project tracker could.

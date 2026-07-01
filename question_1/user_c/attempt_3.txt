@@ -1,7 +1,9 @@
-At my previous company, I was working on a cross-functional project with a team of people who didn't report to me. One of the engineers on the team was consistently late with their deliverables, and it was starting to cause issues for the rest of us.
+At my previous company, I was working on a cross-functional project — some kind of product launch, I think, though I'm a bit fuzzy on the exact context. One of the engineers on the team kept missing their deliverables — I believe it was happening across a few milestones, maybe two or three occasions. It was causing delays for the rest of us.
 
-Since I wasn't their manager, I decided to talk to them directly. I set up a meeting and explained the situation. I told them that the delays were affecting the team's ability to stay on schedule and that I wanted to understand what was going on. They said they had a lot on their plate and weren't sure how to prioritize.
+Since I wasn't their manager, I decided to try addressing it directly. I put together a rough visual of some kind showing how the delays were affecting the timeline — I'm not sure it was the clearest thing, but, uh, I thought it was worth trying.
 
-We talked about it and came up with a plan for them to communicate earlier when things were slipping. After that conversation, things improved and the project got back on track.
+I asked if we could have a quick conversation about it. When I brought it up, they mentioned having competing demands from elsewhere, though they didn't get very specific. I wasn't entirely sure how to respond to that... I kind of just tried to keep it low-key.
 
-I think the main takeaway is that sometimes you just need to have a direct conversation with people even when you don't have authority over them. People are usually pretty reasonable when you approach them respectfully.
+We talked it through and I suggested they try to flag things earlier when something was slipping. I think they were receptive — or at least I got that impression. After that, their delivery did seem to improve and the project finished on time.
+
+I think approaching it directly was probably the right move, even if I'm not sure I always found the right words for it.

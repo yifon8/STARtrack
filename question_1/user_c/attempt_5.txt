@@ -2,7 +2,7 @@ About eighteen months ago I was coordinating a high-visibility product launch �
 
 My job was to protect the timeline without authority to direct this person's work, and without damaging the relationship. Escalating to their manager was a last resort — I wanted to try influence first.
 
-I spent an hour before doing anything else. I mapped the dependencies — each delayed deliverable, which tasks it blocked, and the total buffer we'd burned. I wanted to lead with shared data, not frustration.
+Before any conversation, I mapped the dependencies — each delayed deliverable, which tasks it blocked, and the total buffer we'd burned. I wanted to lead with shared data, not frustration.
 
 Then I asked the engineer if we could grab coffee — informal, low-key. I made a deliberate choice to listen first. When I asked how things were going, they told me they were being assigned to P1 support incidents by a different team lead with no advance warning and no capacity buffer. That was something I hadn't known, and it changed everything about the conversation.
 
