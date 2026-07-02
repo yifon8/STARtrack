@@ -226,6 +226,10 @@ def _make_user_tab(user_id: str):
                 scores_label_box = gr.Markdown(label="Scores")
                 radar_image_box = gr.Image(label="Dimension Scores", show_label=False, type="pil")
                 narrative_box = gr.Textbox(label="Progression narrative", lines=8, interactive=False)
+                gr.Markdown(
+                    "_Your scoresheet is a summary of your scores, strengths, and areas "
+                    "for improvement across all attempts. A new PDF is generated after each submission._"
+                )
                 pdf_output = gr.File(label="Download scoresheet PDF")
 
                 gr.Markdown("---")
